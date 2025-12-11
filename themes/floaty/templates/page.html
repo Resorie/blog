@@ -46,7 +46,7 @@ matching("[.](jpg|png)$") %}
 config.default_language %} {% set section_title = page.components[0] %} {%- else
 %} {% set section_title = page.components[1] %} {%- endif -%}
 <h1 class="title">
-  <a href="/">{{ config.title }}</a>
+  <a href="{{ get_url(path="@/_index.md", lang=lang) }}">{{ config.title }}</a>
 </h1>
 {% endblock page_heading %} {% block content %} {#
 <pre

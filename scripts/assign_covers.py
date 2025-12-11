@@ -7,12 +7,22 @@ import sys
 # Configuration
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 POSTS_DIR = os.path.join(BASE_DIR, "../content/posts")
+DATA_DIR = os.path.join(BASE_DIR, "../data")
+KEY_FILE = os.path.join(DATA_DIR, "UNSPLASH_ACCESS_KEY")
 
-UNSPLASH_ACCESS_KEY = "w9L5EZV34YcYSzJm_8R7UBdTqbvo7PP7FiFMKmCbsj4"
+def get_access_key():
+    try:
+        with open(KEY_FILE, 'r') as f:
+            return f.read().strip()
+    except FileNotFoundError:
+        print(f"Warning: Unsplash access key file not found at {KEY_FILE}")
+        return None
+
+UNSPLASH_ACCESS_KEY = get_access_key()
 
 def get_random_photo():
     if not UNSPLASH_ACCESS_KEY:
-        print("Error: UNSPLASH_ACCESS_KEY environment variable not set.")
+        print("Error: UNSPLASH_ACCESS_KEY not found. Please ensure data/UNSPLASH_ACCESS_KEY exists.")
         return None
     
     url = "https://api.unsplash.com/photos/random?orientation=landscape"
