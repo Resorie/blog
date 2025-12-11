@@ -1180,7 +1180,7 @@ hr {
     }
 
     .toc {
-        background-color: #f9f9f9;
+        background-color: var(--code-bg);
         padding: 1em;
         border-radius: 4px;
         margin-bottom: 2em;
