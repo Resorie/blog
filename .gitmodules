@@ -1,0 +1,9 @@
+[submodule "themes/xuan"]
+	path = themes/xuan
+	url = https://github.com/jhq223/xuan.git
+[submodule "themes/float"]
+	path = themes/float
+	url = https://gitlab.com/float-theme/float.git
+[submodule "themes/anatole"]
+	path = themes/anatole
+	url = https://github.com/longfangsong/anatole-zola.git

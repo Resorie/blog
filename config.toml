@@ -1,0 +1,48 @@
+# The URL the site will be built for
+base_url = "https://resorie.github.io/blog"
+
+title = "Runtime Error"
+description = "Resory's blog"
+
+
+theme = "floaty"
+
+generate_feeds = true
+
+feed_filenames = ["rss.xml", "atom.xml"]
+
+# Whether to automatically compile all Sass files in the sass directory
+compile_sass = true
+
+# Whether to build a search index to be used later on by a JavaScript library
+build_search_index = true
+
+taxonomies = [{ name = "tags", paginate_by = 5 }]
+
+[markdown]
+# Whether to do syntax highlighting
+# Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
+highlight_code = true
+highlight_theme = "css"
+
+render_emoji = true
+math = true
+
+[extra]
+# Put all your custom variables here
+main_section = "posts"
+avatar = "images/avatar.jpeg"
+#math_display = "katex"        # or "mathjax"
+math_display = "mathjax"
+
+# Social links
+display_github_link = true
+github_url = "https://github.com/resorie"
+display_email_link = true
+email_url = "mailto:resorie@qq.com"
+display_bilibili_link = true
+bilibili_url = "https://space.bilibili.com/399133773"
+display_twitter_link = false
+twitter_url = ""
+display_facebook_link = false
+facebook_url = ""

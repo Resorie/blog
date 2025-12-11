@@ -1,0 +1,12 @@
+[[groups]]
+items = [
+    # Add your friends here
+    { name = "lightup37 的博客", url = "https://lightup37.github.io/", description = "离解复合", avatar = "https://avatars.githubusercontent.com/u/86223480" },
+]
+name = "Friends"
+
+[[groups]]
+name = "Projects"
+items = [
+    { name = "Zola", url = "https://www.getzola.org/", description = "The static site generator used for this blog.", avatar = "https://raw.githubusercontent.com/getzola/zola/master/docs/static/img/logo.svg" },
+]
