@@ -43,7 +43,7 @@ $$
 
 复杂度 `$O\left(\dfrac{\log^2p}{w}\right)-O\left(\dfrac{\log^2p}{w^2}\right)$`，神速。
 
-贴一下 [zzq 在 Loj#6466 的实现](https://loj.ac/s/316691)并且稍微解释一下：
+贴一下 [zzt 在 Loj#6466 的实现](https://loj.ac/s/316691)并且稍微解释一下：
 
 ```cpp
 struct u256 {
