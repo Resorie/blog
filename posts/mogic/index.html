@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>模法 | Runtime Error</title>
+
+  
+  
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cantarell:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans+SC:wght@700&family=Noto+Serif+SC:wght@300;400;500;700&family=Playwrite+Norge:wght@100..400&display=swap" rel="stylesheet">
+
+  <link rel='stylesheet' href='https://unpkg.com/ress/dist/ress.min.css'>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jQuery.mmenu/8.5.10/mmenu.min.css">
+  <link rel="stylesheet" href="https://resorie.github.io/blog/style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet">
+
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-svg.js"></script>
+  <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          // Unwrap code blocks for MathJax
+          // 1. Display Math (```math-display ... ```)
+          document.querySelectorAll('code.language-math-display').forEach(el => {
+              const pre = el.parentElement;
+              if (pre.tagName === 'PRE') {
+                  const math = el.textContent.trim();
+                  const div = document.createElement('div');
+                  div.textContent = math;
+                  pre.replaceWith(div);
+              }
+          });
+
+          // 2. Inline Math (`$ ... $`)
+          document.querySelectorAll('code').forEach(el => {
+              if (el.classList.contains('language-math-display')) return;
+              if (el.parentElement.tagName === 'PRE') return;
+
+              const text = el.textContent.trim();
+              // Check if it looks like math: $...$
+              if (text.startsWith('$') && text.endsWith('$') && !text.startsWith('$$')) {
+                  const span = document.createElement('span');
+                  span.textContent = text;
+                  el.replaceWith(span);
+              }
+          });
+          
+          // Trigger MathJax to process the new elements
+          if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+              MathJax.typesetPromise();
+          }
+      });
+  </script>
+  
+
+  
+
+  
+<!-- Primary Meta Tags -->
+ 
+<meta
+  name="description"
+  content="Montgomery Multiplications"
+/>
+
+<!-- Open Graph / Facebook -->
+<meta property="og:title" content="模法 | Runtime Error" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://resorie.github.io/blog/posts/mogic/" />
+ 
+<meta property="article:published_time" content="2025-07-23" />
+<meta property="article:modified_time" content="2025-07-23" />
+
+<meta property="article:section" content="posts" />
+<!--
+  
+    
+      
+        <meta property="article:tag" content="数论">
+      
+        <meta property="article:tag" content="算法">
+      
+    
+  
+-->
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@xxx" />
+<meta name="twitter:creator" content="@xxx" />
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300&display=swap"
+  rel="stylesheet"
+/>
+
+</head>
+
+<body class="body-block">
+  <div id="sidebar-mask" onclick="toggleSidebar()"></div>
+  <div id="sidebar" class="">
+    <div class="logo-title">
+      <div class="title-inner">
+        
+        <div class="avatar">
+          <img src="https://resorie.github.io/blog/images/avatar.jpeg" alt="avatar">
+        </div>
+        
+        <div class="title">
+          <h3><a href="https://resorie.github.io/blog/">Runtime Error</a></h3>
+          <div class="description">
+            <p>Resory&#x27;s blog</p>
+          </div>
+        </div>
+      </div>
+      <ul class="social-links"><li><a href="https://github.com/resorie" aria-label="Go to GitHub profile page"><i class="fab fa-github"></i></a></li><li><a href="mailto:resorie@qq.com" aria-label="Send email"><i class="fas fa-envelope"></i></a></li><li><a href="https://space.bilibili.com/399133773" aria-label="Go to Bilibili profile page"><i class="fab fa-bilibili"></i></a></li></ul>
+      <div class="sidebar-action">
+        <a href="https://resorie.github.io/blog/about/">About Me</a>
+      </div>
+    </div>
+    <div class="footer">
+      <span>Based on theme </span><a href="https://float-theme.netlify.app/">Float</a> & <a href="https://longfangsong.github.io/">anatole</a>
+      <div class="by_zola"><a href="https://www.getzola.org/" target="_blank">Powered by Zola</a></div>
+    </div>
+  </div>
+
+  <div id="main">
+    <div class="page-top animated fadeInDown">
+      <div class="nav">
+        <li><a href="https://resorie.github.io/blog/" >Home</a></li>
+        <li class="separator"></li>
+        <li><a href="https://resorie.github.io/blog/about/" >About</a></li>
+        <li class="separator"></li>
+        <li><a href="https://resorie.github.io/blog/archive/" >Archives</a></li>
+        <li class="separator"></li>
+        <li><a href="https://resorie.github.io/blog/tags/" >Categories</a></li>
+        <li class="separator"></li>
+        <li><a href="https://resorie.github.io/blog/links/" >Links</a></li>
+      </div>
+      <div class="information">
+        <div class="back_btn">
+          <a onclick="window.history.go(-1)"><i class="fas fa-chevron-left"></i></a>
+        </div>
+        <div class="theme_btn">
+          <a onclick="toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></a>
+        </div>
+        <div class="feed_btn">
+          <a class="feed-icon"><i class="fas fa-rss"></i></a>
+          <div class="feed-dropdown">
+            <a href="https://resorie.github.io/blog/atom.xml" target="_blank">Atom</a>
+            <a href="https://resorie.github.io/blog/rss.xml" target="_blank">RSS</a>
+          </div>
+        </div>
+        <div class="avatar_btn">
+          <a onclick="toggleSidebar()"><i class="fas fa-bars"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="autopagerize_page_element">
+      <div class="content">
+         
+
+<article class="content-article">
+  <main class="article-content">
+    <div class="article-meta" style="margin-bottom: 1em; color: var(--text-color-light);">
+      
+      Jul. 23, <a href="https://resorie.github.io/blog/archive/#2025">2025</a>
+      
+      
+      &nbsp;&nbsp;
+      
+      <a href="https://resorie.github.io/blog/tags/shu-lun/">#数论</a>&nbsp;
+      
+      <a href="https://resorie.github.io/blog/tags/suan-fa/">#算法</a>&nbsp;
+      
+      
+    </div>
+    <h1 class="heading">模法</h1>
+    <p class="description">Montgomery Multiplications</p>
+     <p>因为滚去 whk 鸽了两年的 Montgomery 取模。</p>
+<p>众所周知取模很慢，因为一般的除法很慢。但是除一个 <code>$2$</code> 的幂或者对它取模很快。考虑将对固定模数 <code>$p$</code> 的取模转化成对一个 <code>$r=2^k$</code> 的除法和取模操作。要求 <code>$p$</code> 与 <code>$r$</code> 互质，具体使用中 <code>$p$</code> 通常是奇素数，显然满足要求。</p>
+<p>由 <code>$p$</code> 与 <code>$r$</code> 互质，<code>$\{xr\mid 0\le x&lt;p\}$</code> 是一个模 <code>$p$</code> 的完全剩余系。考虑用 <code>$r(x)=xr\bmod p$</code> 进行一些操作。</p>
+<p>为了快速计算 <code>$r(x)$</code>，考察一个很邪恶的函数。令 <code>$r^{-1}$</code> 为模 <code>$p$</code> 意义下 <code>$r$</code> 的逆元，定义 <code>$redc(x)=xr^{-1}\bmod p$</code>。redc 是 reduce 的缩写，<del>Montgomery 的论文里这么写的</del>。先计算 <code>$redc(x)$</code>。把取模用不定方程替代掉：</p>
+<pre data-lang="math-display" class="language-math-display z-code"><code class="language-math-display" data-lang="math-display"><span class="z-text z-plain">$$
+</span><span class="z-text z-plain">r\cdot redc(x) + kp=x
+</span><span class="z-text z-plain">\\
+</span><span class="z-text z-plain">redc(x)=\frac{x-kp}{r}
+</span><span class="z-text z-plain">$$
+</span></code></pre>
+<p>然后考察 <code>$k$</code>。由 <code>$r$</code> 的性质，自然想到对 <code>$r$</code> 取模：</p>
+<pre data-lang="math-display" class="language-math-display z-code"><code class="language-math-display" data-lang="math-display"><span class="z-text z-plain">$$
+</span><span class="z-text z-plain">kp\equiv x\pmod r
+</span><span class="z-text z-plain">\\ k=xp^{-1} \bmod r
+</span><span class="z-text z-plain">$$
+</span></code></pre>
+<p>由于模数固定，<code>$p^{-1}$</code> 可以预处理。这样算 <code>$redc(x)$</code> 就可以用两次乘法和一些移位搞定了，很快。注意稍微处理一下，保证 <code>$redc(x)\in[0,p)$</code>。于是 <code>$r(x)$</code> 也很好算：<code>$r(x)=redc(xr^2)$</code>。可以预处理一下 <code>$r^2\bmod p$</code>。</p>
+<p>接着观测一下 <code>$r(x)$</code> 的性质。显然 <code>$r(x\pm y)=r(x)\pm r(y)$</code>。对乘法有 <code>$r(xy)=\frac{r(x)r(y)}{r}=redc\left(r(x)r(y)\right)$</code>。所以可以直接用 <code>$r(x)$</code> 代替 <code>$x$</code> 进行计算。从 <code>$r(x)$</code> 还原时有 <code>$x=redc(r(x))$</code>。</p>
+<p>需要预处理 <code>$p^{-1}\bmod r$</code> 和 <code>$r^2\bmod p$</code>。前者可以对 <code>$f(x)=\dfrac{1}x-p$</code> 牛迭得到，每次令 <code>$x'=2x-x^2p$</code> 即可。后者没啥好办法，直接算吧。</p>
+<p>复杂度 <code>$O\left(\dfrac{\log^2p}{w}\right)-O\left(\dfrac{\log^2p}{w^2}\right)$</code>，神速。</p>
+<p>贴一下 <a href="https://loj.ac/s/316691">zzt 在 Loj#6466 的实现</a>并且稍微解释一下：</p>
+<pre data-lang="cpp" class="language-cpp z-code"><code class="language-cpp" data-lang="cpp"><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-storage z-type z-c++">struct</span> </span><span class="z-meta z-struct z-c++"><span class="z-entity z-name z-struct z-c++">u256</span></span><span class="z-meta z-struct z-c++"> <span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-begin z-c++">{</span></span></span><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++">
+</span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++">	u128 lo<span class="z-punctuation z-separator z-c++">,</span> hi<span class="z-punctuation z-terminator z-c++">;</span>
+</span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++">	<span class="z-meta z-method z-constructor z-c++"><span class="z-entity z-name z-function z-constructor z-c++">u256</span></span><span class="z-meta z-method z-parameters z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-method z-parameters z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-meta z-method z-c++"> </span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-begin z-c++">{</span></span></span><span class="z-meta z-method z-c++"></span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-end z-c++">}</span></span></span>
+</span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++">	<span class="z-meta z-method z-constructor z-c++"><span class="z-entity z-name z-function z-constructor z-c++">u256</span></span><span class="z-meta z-method z-parameters z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-method z-parameters z-c++"><span class="z-meta z-group z-c++">u128 <span class="z-variable z-parameter z-c++">lo</span><span class="z-punctuation z-separator z-c++">,</span> u128 <span class="z-variable z-parameter z-c++">hi</span><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-meta z-method z-c++"> </span><span class="z-meta z-method z-constructor z-initializer-list z-c++"><span class="z-punctuation z-separator z-initializer-list z-c++">:</span> <span class="z-variable z-other z-readwrite z-member z-c++">lo</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span><span class="z-meta z-group z-c++">lo</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span><span class="z-punctuation z-separator z-c++">,</span> <span class="z-variable z-other z-readwrite z-member z-c++">hi</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span><span class="z-meta z-group z-c++">hi</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span> </span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-begin z-c++">{</span></span></span><span class="z-meta z-method z-c++"></span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-end z-c++">}</span></span></span>
+</span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++">	<span class="z-storage z-modifier z-c++">static</span> u256 <span class="z-meta z-method z-c++"><span class="z-entity z-name z-function z-c++">mul128</span></span><span class="z-meta z-method z-parameters z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-method z-parameters z-c++"><span class="z-meta z-group z-c++">u128 <span class="z-variable z-parameter z-c++">a</span><span class="z-punctuation z-separator z-c++">,</span> u128 <span class="z-variable z-parameter z-c++">b</span><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-meta z-method z-c++"> </span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-begin z-c++">{</span></span></span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">		u64 a_hi <span class="z-keyword z-operator z-assignment z-c">=</span> a <span class="z-keyword z-operator z-arithmetic z-c">&gt;&gt;</span> <span class="z-constant z-numeric z-integer z-decimal z-c++">64</span><span class="z-punctuation z-separator z-c++">,</span> a_lo <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-meta z-function-call z-c++"><span class="z-variable z-function z-c++">u64</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++">a</span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-punctuation z-terminator z-c++">;</span>
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">		u64 b_hi <span class="z-keyword z-operator z-assignment z-c">=</span> b <span class="z-keyword z-operator z-arithmetic z-c">&gt;&gt;</span> <span class="z-constant z-numeric z-integer z-decimal z-c++">64</span><span class="z-punctuation z-separator z-c++">,</span> b_lo <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-meta z-function-call z-c++"><span class="z-variable z-function z-c++">u64</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++">b</span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-punctuation z-terminator z-c++">;</span>
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">		u128 p01 <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-meta z-function-call z-c++"><span class="z-variable z-function z-c++">u128</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++">a_lo</span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span> <span class="z-keyword z-operator z-c">*</span> b_lo<span class="z-punctuation z-terminator z-c++">;</span>
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">		u128 p12 <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-meta z-function-call z-c++"><span class="z-variable z-function z-c++">u128</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++">a_hi</span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span> <span class="z-keyword z-operator z-c">*</span> b_lo <span class="z-keyword z-operator z-arithmetic z-c">+</span> <span class="z-meta z-function-call z-c++"><span class="z-variable z-function z-c++">u64</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++">p01 <span class="z-keyword z-operator z-arithmetic z-c">&gt;&gt;</span> <span class="z-constant z-numeric z-integer z-decimal z-c++">64</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-punctuation z-terminator z-c++">;</span>
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">		u64 t_hi <span class="z-keyword z-operator z-assignment z-c">=</span> p12 <span class="z-keyword z-operator z-arithmetic z-c">&gt;&gt;</span> <span class="z-constant z-numeric z-integer z-decimal z-c++">64</span><span class="z-punctuation z-separator z-c++">,</span> t_lo <span class="z-keyword z-operator z-assignment z-c">=</span> p12<span class="z-punctuation z-terminator z-c++">;</span>
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">		p12 <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-meta z-function-call z-c++"><span class="z-variable z-function z-c++">u128</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++">a_lo</span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span> <span class="z-keyword z-operator z-c">*</span> b_hi <span class="z-keyword z-operator z-arithmetic z-c">+</span> t_lo<span class="z-punctuation z-terminator z-c++">;</span>
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">		u128 p23 <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-meta z-function-call z-c++"><span class="z-variable z-function z-c++">u128</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++">a_hi</span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span> <span class="z-keyword z-operator z-c">*</span> b_hi <span class="z-keyword z-operator z-arithmetic z-c">+</span> <span class="z-meta z-function-call z-c++"><span class="z-variable z-function z-c++">u64</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++">p12 <span class="z-keyword z-operator z-arithmetic z-c">&gt;&gt;</span> <span class="z-constant z-numeric z-integer z-decimal z-c++">64</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span> <span class="z-keyword z-operator z-arithmetic z-c">+</span> t_hi<span class="z-punctuation z-terminator z-c++">;</span>
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">		<span class="z-keyword z-control z-flow z-return z-c++">return</span> <span class="z-meta z-function-call z-c++"><span class="z-variable z-function z-c++">u256</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-meta z-function-call z-c++"><span class="z-variable z-function z-c++">u64</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++">p01</span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span> <span class="z-keyword z-operator z-arithmetic z-c">|</span> <span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span>p12 <span class="z-keyword z-operator z-arithmetic z-c">&lt;&lt;</span> <span class="z-constant z-numeric z-integer z-decimal z-c++">64</span><span class="z-punctuation z-section z-group z-end z-c++">)</span></span><span class="z-punctuation z-separator z-c++">,</span> p23</span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-punctuation z-terminator z-c++">;</span>
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">	</span></span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-end z-c++">}</span></span></span>
+</span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"></span></span><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-end z-c++">}</span></span></span> <span class="z-punctuation z-terminator z-c++">;</span>
+</span><span class="z-source z-c++">
+</span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-storage z-type z-c++">struct</span> </span><span class="z-meta z-struct z-c++"><span class="z-entity z-name z-struct z-c++">Mont</span></span><span class="z-meta z-struct z-c++"> <span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-begin z-c++">{</span></span></span><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++">
+</span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++">	u128 mod<span class="z-punctuation z-separator z-c++">,</span> inv<span class="z-punctuation z-separator z-c++">,</span> r2<span class="z-punctuation z-terminator z-c++">;</span>
+</span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++">	<span class="z-meta z-method z-constructor z-c++"><span class="z-entity z-name z-function z-constructor z-c++">Mont</span></span><span class="z-meta z-method z-parameters z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-method z-parameters z-c++"><span class="z-meta z-group z-c++">u128 <span class="z-variable z-parameter z-c++">n</span><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-meta z-method z-c++"> </span><span class="z-meta z-method z-constructor z-initializer-list z-c++"><span class="z-punctuation z-separator z-initializer-list z-c++">:</span> <span class="z-variable z-other z-readwrite z-member z-c++">mod</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span><span class="z-meta z-group z-c++">n</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span> </span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-begin z-c++">{</span></span></span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">		<span class="z-meta z-function-call z-c++"><span class="z-support z-function z-C99 z-c">assert</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++">n <span class="z-keyword z-operator z-c">&amp;</span> <span class="z-constant z-numeric z-integer z-decimal z-c++">1</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-punctuation z-terminator z-c++">;</span>
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">		inv <span class="z-keyword z-operator z-assignment z-c">=</span> n<span class="z-punctuation z-terminator z-c++">;</span>
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">		<span class="z-keyword z-control z-c++">for</span> <span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span><span class="z-storage z-type z-c">int</span> i <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-constant z-numeric z-integer z-decimal z-c++">0</span><span class="z-punctuation z-terminator z-c++">;</span> i <span class="z-keyword z-operator z-comparison z-c">&lt;</span> <span class="z-constant z-numeric z-integer z-decimal z-c++">6</span><span class="z-punctuation z-terminator z-c++">;</span> <span class="z-keyword z-operator z-arithmetic z-c">++</span>i<span class="z-punctuation z-section z-group z-end z-c++">)</span></span> inv <span class="z-keyword z-operator z-assignment z-augmented z-c">*=</span> <span class="z-constant z-numeric z-integer z-decimal z-c++">2</span> <span class="z-keyword z-operator z-arithmetic z-c">-</span> n <span class="z-keyword z-operator z-c">*</span> inv<span class="z-punctuation z-terminator z-c++">;</span>
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">		r2 <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-keyword z-operator z-arithmetic z-c">-</span>n <span class="z-keyword z-operator z-arithmetic z-c">%</span> n<span class="z-punctuation z-terminator z-c++">;</span>
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">		<span class="z-keyword z-control z-c++">for</span> <span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span><span class="z-storage z-type z-c">int</span> i <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-constant z-numeric z-integer z-decimal z-c++">0</span><span class="z-punctuation z-terminator z-c++">;</span> i <span class="z-keyword z-operator z-comparison z-c">&lt;</span> <span class="z-constant z-numeric z-integer z-decimal z-c++">4</span><span class="z-punctuation z-terminator z-c++">;</span> <span class="z-keyword z-operator z-arithmetic z-c">++</span>i<span class="z-punctuation z-section z-group z-end z-c++">)</span></span> <span class="z-keyword z-control z-c++">if</span> <span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span>r2 <span class="z-keyword z-operator z-assignment z-augmented z-c">&lt;&lt;=</span> <span class="z-constant z-numeric z-integer z-decimal z-c++">1</span><span class="z-punctuation z-section z-group z-end z-c++">)</span></span> <span class="z-keyword z-operator z-comparison z-c">&gt;=</span> mod<span class="z-punctuation z-section z-group z-end z-c++">)</span></span> r2 <span class="z-keyword z-operator z-assignment z-augmented z-c">-=</span> mod<span class="z-punctuation z-terminator z-c++">;</span>
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">		<span class="z-keyword z-control z-c++">for</span> <span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span><span class="z-storage z-type z-c">int</span> i <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-constant z-numeric z-integer z-decimal z-c++">0</span><span class="z-punctuation z-terminator z-c++">;</span> i <span class="z-keyword z-operator z-comparison z-c">&lt;</span> <span class="z-constant z-numeric z-integer z-decimal z-c++">5</span><span class="z-punctuation z-terminator z-c++">;</span> <span class="z-keyword z-operator z-arithmetic z-c">++</span>i<span class="z-punctuation z-section z-group z-end z-c++">)</span></span> r2 <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-meta z-function-call z-c++"><span class="z-variable z-function z-c++">mul</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++">r2<span class="z-punctuation z-separator z-c++">,</span> r2</span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-punctuation z-terminator z-c++">;</span>
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">	</span></span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-end z-c++">}</span></span></span>
+</span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++">	u128 <span class="z-meta z-method z-c++"><span class="z-entity z-name z-function z-c++">reduce</span></span><span class="z-meta z-method z-parameters z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-method z-parameters z-c++"><span class="z-meta z-group z-c++">u256 <span class="z-variable z-parameter z-c++">x</span><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-meta z-method z-c++"> <span class="z-storage z-modifier z-c++">const</span> </span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-begin z-c++">{</span></span></span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">		u128 y <span class="z-keyword z-operator z-assignment z-c">=</span> x<span class="z-punctuation z-accessor z-dot z-c++">.</span><span class="z-variable z-other z-readwrite z-member z-c++">hi</span> <span class="z-keyword z-operator z-arithmetic z-c">-</span> <span class="z-meta z-function-call z-c++">u256<span class="z-punctuation z-accessor z-double-colon z-c++">::</span><span class="z-variable z-function z-c++">mul128</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++">x<span class="z-punctuation z-accessor z-dot z-c++">.</span><span class="z-variable z-other z-readwrite z-member z-c++">lo</span> <span class="z-keyword z-operator z-c">*</span> inv<span class="z-punctuation z-separator z-c++">,</span> mod</span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-punctuation z-accessor z-dot z-c++">.</span><span class="z-variable z-other z-readwrite z-member z-c++">hi</span><span class="z-punctuation z-terminator z-c++">;</span>
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">		<span class="z-keyword z-control z-flow z-return z-c++">return</span> <span class="z-meta z-function-call z-c++"><span class="z-variable z-function z-c++">i128</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++">y</span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span> <span class="z-keyword z-operator z-comparison z-c">&lt;</span> <span class="z-constant z-numeric z-integer z-decimal z-c++">0</span> <span class="z-keyword z-operator z-ternary z-c">?</span> y <span class="z-keyword z-operator z-arithmetic z-c">+</span> mod <span class="z-keyword z-operator z-ternary z-c">:</span> y<span class="z-punctuation z-terminator z-c++">;</span>
+</span></span></span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++">	</span></span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-end z-c++">}</span></span></span>
+</span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++">	u128 <span class="z-meta z-method z-c++"><span class="z-entity z-name z-function z-c++">reduce</span></span><span class="z-meta z-method z-parameters z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-method z-parameters z-c++"><span class="z-meta z-group z-c++">u128 <span class="z-variable z-parameter z-c++">x</span><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-meta z-method z-c++"> <span class="z-storage z-modifier z-c++">const</span> </span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-begin z-c++">{</span></span></span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"> <span class="z-keyword z-control z-flow z-return z-c++">return</span> <span class="z-meta z-function-call z-c++"><span class="z-variable z-function z-c++">reduce</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-meta z-function-call z-c++"><span class="z-variable z-function z-c++">u256</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++">x<span class="z-punctuation z-separator z-c++">,</span> <span class="z-constant z-numeric z-integer z-decimal z-c++">0</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-punctuation z-terminator z-c++">;</span> </span></span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-end z-c++">}</span></span></span>
+</span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++">	u128 <span class="z-meta z-method z-c++"><span class="z-entity z-name z-function z-c++">init</span></span><span class="z-meta z-method z-parameters z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-method z-parameters z-c++"><span class="z-meta z-group z-c++">u128 <span class="z-variable z-parameter z-c++">n</span><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-meta z-method z-c++"> <span class="z-storage z-modifier z-c++">const</span> </span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-begin z-c++">{</span></span></span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"> <span class="z-keyword z-control z-flow z-return z-c++">return</span> <span class="z-meta z-function-call z-c++"><span class="z-variable z-function z-c++">reduce</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-meta z-function-call z-c++">u256<span class="z-punctuation z-accessor z-double-colon z-c++">::</span><span class="z-variable z-function z-c++">mul128</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++">n<span class="z-punctuation z-separator z-c++">,</span> r2</span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-punctuation z-terminator z-c++">;</span> </span></span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-end z-c++">}</span></span></span>
+</span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++">	u128 <span class="z-meta z-method z-c++"><span class="z-entity z-name z-function z-c++">mul</span></span><span class="z-meta z-method z-parameters z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-method z-parameters z-c++"><span class="z-meta z-group z-c++">u128 <span class="z-variable z-parameter z-c++">a</span><span class="z-punctuation z-separator z-c++">,</span> u128 <span class="z-variable z-parameter z-c++">b</span><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-meta z-method z-c++"> <span class="z-storage z-modifier z-c++">const</span> </span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-begin z-c++">{</span></span></span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"> <span class="z-keyword z-control z-flow z-return z-c++">return</span> <span class="z-meta z-function-call z-c++"><span class="z-variable z-function z-c++">reduce</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-meta z-function-call z-c++">u256<span class="z-punctuation z-accessor z-double-colon z-c++">::</span><span class="z-variable z-function z-c++">mul128</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++">a<span class="z-punctuation z-separator z-c++">,</span> b</span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-punctuation z-terminator z-c++">;</span> </span></span><span class="z-meta z-method z-c++"><span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-end z-c++">}</span></span></span>
+</span></span></span><span class="z-source z-c++"><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"></span></span><span class="z-meta z-struct z-c++"><span class="z-meta z-block z-c++"><span class="z-punctuation z-section z-block z-end z-c++">}</span></span></span> <span class="z-meta z-function-call z-c++"><span class="z-variable z-function z-c++">mont</span><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-begin z-c++">(</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-constant z-numeric z-integer z-decimal z-c++">1</span></span></span><span class="z-meta z-function-call z-c++"><span class="z-meta z-group z-c++"><span class="z-punctuation z-section z-group z-end z-c++">)</span></span></span><span class="z-punctuation z-terminator z-c++">;</span>
+</span></code></pre>
+<p><code>u256</code> 是一个压位 <code>u128</code>，<code>$x=hi\times2^{128}+lo$</code>。</p>
+<p><code>Mont</code> 是 Montgomery 乘法封装成一个结构体。<code>mod</code> 是模数 <code>$p$</code>，<code>inv</code> 是 <code>$p^{-1}\bmod r$</code>，<code>r2</code> 是 <code>$r^2\bmod p$</code>。但是这个 <code>r2</code> 的初始化我没看懂。<code>assert</code> 用来特判偶数，但是这题数据好像没偶数。</p>
+<p>使用时先 <code>mont=Mont(p)</code>，每个数都先 <code>x=mont.init(x)</code> 一下。乘法直接 <code>prod=mont.mul(a,b)</code>。还原的时候 <code>mont.reduce</code> 一下自己就行。</p>
+
+  </main>
+  <section class="article-action-block">
+    
+    <!-- AddToAny BEGIN -->
+    <div class="addtoany-block">
+      <a
+        href="https://www.addtoany.com/share#url=https:&#x2F;&#x2F;resorie.github.io&#x2F;blog&#x2F;posts&#x2F;mogic&#x2F;&amp;title=模法"
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        ><img class="button" src="https://static.addtoany.com/buttons/a2a.svg"
+      /></a>
+      <a
+        href="https://www.addtoany.com/add_to/mastodon?linkurl=https:&#x2F;&#x2F;resorie.github.io&#x2F;blog&#x2F;posts&#x2F;mogic&#x2F;&amp;linkname=模法"
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        ><img
+          class="button"
+          src="https://static.addtoany.com/buttons/mastodon.svg"
+      /></a>
+      <a
+        href="https://www.addtoany.com/add_to/telegram?linkurl=https:&#x2F;&#x2F;resorie.github.io&#x2F;blog&#x2F;posts&#x2F;mogic&#x2F;&amp;linkname=模法"
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        ><img
+          class="button"
+          src="https://static.addtoany.com/buttons/telegram.svg"
+      /></a>
+      <a
+        href="https://www.addtoany.com/add_to/twitter?linkurl=https:&#x2F;&#x2F;resorie.github.io&#x2F;blog&#x2F;posts&#x2F;mogic&#x2F;&amp;linkname=模法"
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        ><img
+          class="button"
+          src="https://static.addtoany.com/buttons/twitter.svg"
+      /></a>
+      <a
+        href="https://www.addtoany.com/add_to/facebook?linkurl=https:&#x2F;&#x2F;resorie.github.io&#x2F;blog&#x2F;posts&#x2F;mogic&#x2F;&amp;linkname=模法"
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        ><img
+          class="button"
+          src="https://static.addtoany.com/buttons/facebook.svg"
+      /></a>
+      <a
+        href="https://www.addtoany.com/add_to/line?linkurl=https:&#x2F;&#x2F;resorie.github.io&#x2F;blog&#x2F;posts&#x2F;mogic&#x2F;&amp;linkname=模法"
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        ><img class="button" src="https://static.addtoany.com/buttons/line.svg"
+      /></a>
+    </div>
+    <!-- AddToAny END -->
+    
+  </section>
+  <br />
+  
+</article>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      var sidebar = document.getElementById("sidebar");
+      var mask = document.getElementById("sidebar-mask");
+      sidebar.classList.toggle("open");
+      mask.classList.toggle("open");
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      const icon = document.getElementById("theme-icon");
+      if (body.getAttribute("data-theme") === "dark") {
+        body.setAttribute("data-theme", "light");
+        icon.classList.remove("fa-sun");
+        icon.classList.add("fa-moon");
+        localStorage.setItem("theme", "light");
+      } else {
+        body.setAttribute("data-theme", "dark");
+        icon.classList.remove("fa-moon");
+        icon.classList.add("fa-sun");
+        localStorage.setItem("theme", "dark");
+      }
+    }
+
+    // Initialize theme
+    (function() {
+      const savedTheme = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      
+      if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+        document.body.setAttribute("data-theme", "dark");
+        // Icon update will happen after DOM load if we put this script at the end, 
+        // but since this is inline at the end of body, we might need to wait for DOMContentLoaded if the icon isn't ready?
+        // Actually, this script is at the end of body, so elements should be parsed.
+        const icon = document.getElementById("theme-icon");
+        if (icon) {
+            icon.classList.remove("fa-moon");
+            icon.classList.add("fa-sun");
+        }
+      }
+    })();
+
+    // Footnote Navigation
+    document.addEventListener("DOMContentLoaded", function() {
+        const refs = document.querySelectorAll('sup.footnote-reference a');
+        refs.forEach((ref, index) => {
+            if (!ref.id) {
+                ref.id = 'footnote-ref-' + (index + 1);
+            }
+            
+            const href = ref.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                const footnoteId = href.substring(1);
+                const footnote = document.getElementById(footnoteId);
+                
+                if (footnote) {
+                    const backLink = document.createElement('a');
+                    backLink.href = '#' + ref.id;
+                    backLink.className = 'footnote-backref';
+                    backLink.innerHTML = ' ↩';
+                    backLink.style.textDecoration = 'none';
+                    backLink.style.marginLeft = '5px';
+                    backLink.ariaLabel = "Return to text";
+                    
+                    const paragraphs = footnote.querySelectorAll('p');
+                    if (paragraphs.length > 0) {
+                        paragraphs[paragraphs.length - 1].appendChild(backLink);
+                    } else {
+                        footnote.appendChild(backLink);
+                    }
+                }
+            }
+        });
+    });
+  </script>
+
+  <script src="//instant.page/5.1.0" type="module" integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+</body>
+
+</html>
