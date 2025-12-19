@@ -8,7 +8,6 @@ tags = ["数论", "密码学", "算法"]
 
 [extra]
 feature_image = "https://images.unsplash.com/photo-1764591696226-ea4e8d655bc7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDIyMzZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NjU0MzMzMzl8&ixlib=rb-4.1.0&q=80&w=1080"
-pinned = true
 +++
 
 填一个[坑](https://www.luogu.com.cn/article/vy3tfjw4)。这个鸽了三年多了。
