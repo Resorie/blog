@@ -8,4 +8,4 @@ themes/float/
 
 push-all.sh
 
-.venv/
+.venv
