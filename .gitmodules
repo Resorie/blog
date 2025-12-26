@@ -1,0 +1,3 @@
+[submodule "themes/nivis"]
+	path = themes/nivis
+	url = git@github.com:Resorie/zola-theme-nivis.git

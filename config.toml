@@ -5,7 +5,7 @@ title = "Runtime Error"
 description = "Resory's blog"
 
 
-theme = "floaty"
+theme = "nivis"
 
 generate_feeds = true
 
@@ -27,6 +27,8 @@ highlight_theme = "css"
 
 render_emoji = true
 math = true
+github_alerts = true
+bottom_footnotes = true
 
 [extra]
 # Put all your custom variables here
