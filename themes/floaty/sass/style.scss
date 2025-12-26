@@ -76,14 +76,14 @@ a:hover {
 }
 
 em, i {
-    font-family: 'Playwrite Norge', 'FZKai', 'KaiTi', '楷体', serif;
-    font-style: normal;
+    font-family: 'STIX Two Text', 'FZKai', 'KaiTi', '楷体', serif;
+    font-style: italic;
 }
 
 strong, b {
-    font-family: 'Noto Sans SC', 'Noto Sans CN', sans-serif;
+    font-family: 'STIX Two Text', sans-serif, 'Noto Sans SC', 'Noto Sans CN';
     font-weight: bold;
-    letter-spacing: 0.03em;
+    // letter-spacing: 0.03em;
 }
 
 h2 {
@@ -163,7 +163,7 @@ hr {
 .body-block {
     margin: 0 auto 0 auto;
     color: var(--text-color);
-    font-family: 'Cantarell', 'Source Han Serif SC', 'Source Han Serif CN', 'Noto Serif SC', 'Noto Serif CN', serif;
+    font-family: 'STIX Two Text', 'Source Han Serif SC', 'Source Han Serif CN', 'Noto Serif SC', 'Noto Serif CN', serif;
     background-color: var(--bg-color);
 
     h1, h2, h3, h4, h5, h6 {
@@ -491,7 +491,7 @@ hr {
                 white-space: nowrap;
                 margin-left: 0;
                 transition: all 0.3s ease;
-                font-size: 0.9em;
+                font-size: 0.87em;
                 font-weight: bold;
                 color: var(--z-keyword);
                 font-family: 'Noto Sans SC', 'Noto Sans CN', sans-serif;
@@ -1478,9 +1478,9 @@ hr {
       }
       &.active {
         color: var(--text-color);
-        font-family: 'Noto Sans SC', 'Noto Sans CN', sans-serif;
+        font-family: 'STIX Two Text', 'Noto Sans SC', 'Noto Sans CN', sans-serif;
         font-weight: bold;
-        letter-spacing: 0.03em;
+        // letter-spacing: 0.03em;
         border-bottom: 1px solid var(--text-color);
       }
     }
