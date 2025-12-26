@@ -25,6 +25,9 @@ taxonomies = [{ name = "tags", paginate_by = 5 }]
 highlight_code = true
 highlight_theme = "css"
 
+
+extra_syntaxes_and_themes = ["themes/nivis/syntaxes/"]
+
 render_emoji = true
 math = true
 github_alerts = true

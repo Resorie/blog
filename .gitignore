@@ -7,3 +7,5 @@ data/UNSPLASH_ACCESS_KEY
 themes/float/
 
 push-all.sh
+
+.venv/

@@ -8,5 +8,5 @@ name = "Friends"
 [[groups]]
 name = "Projects"
 items = [
-    { name = "Zola", url = "https://www.getzola.org/", description = "The static site generator used for this blog.", avatar = "https://raw.githubusercontent.com/getzola/zola/master/docs/static/img/logo.svg" },
+    { name = "Zola", url = "https://www.getzola.org/", description = "The static site generator used for this blog.", avatar = "https://avatars.githubusercontent.com/u/43047029" },
 ]
