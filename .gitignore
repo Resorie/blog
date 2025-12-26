@@ -5,4 +5,5 @@ public/
 data/UNSPLASH_ACCESS_KEY
 
 themes/float/
-themes/floatie/
+
+push-all.sh
