@@ -7,7 +7,6 @@ description = "Montgomery Multiplications"
 tags = ["数论", "算法"]
 
 [extra]
-feature_image = "https://images.unsplash.com/photo-1764893216411-c4ee22e22a91?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDIyMzZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NjU0MzMzNDB8&ixlib=rb-4.1.0&q=80&w=1080"
 +++
 
 因为滚去 whk 鸽了两年的 Montgomery 取模。

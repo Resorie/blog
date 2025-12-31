@@ -7,7 +7,6 @@ description = "Project Euler 随机做题记录。"
 tags = ["数学", "数论"]
 
 [extra]
-feature_image = "https://images.unsplash.com/photo-1764768049904-5392dffdda14?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDIyMzZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NjYxNzA0NDN8&ixlib=rb-4.1.0&q=80&w=1080"
 pinned = true
 +++
 
