@@ -1,6 +1,6 @@
 +++
 title = "About Me"
-template = "page.html"
+template = "about.html"
 +++
 
 你好，我是 Resory。我在其他网站上的 id 可能是 Sya Resory, Resorie 等。
