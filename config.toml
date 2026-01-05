@@ -40,13 +40,9 @@ avatar = "images/avatar.jpeg"
 math_display = "mathjax"
 
 # Social links
-display_github_link = true
-github_url = "https://github.com/resorie"
-display_email_link = true
-email_url = "mailto:resorie@qq.com"
-display_bilibili_link = true
-bilibili_url = "https://space.bilibili.com/399133773"
-display_twitter_link = false
-twitter_url = ""
-display_facebook_link = false
-facebook_url = ""
+social_links = [
+    { name = "github", url = "https://github.com/resorie" },
+    { name = "email", url = "mailto:resorie@qq.com" },
+    { name = "bilibili", url = "https://space.bilibili.com/399133773" },
+    { name = "rss", url = "/atom.xml" },
+]
