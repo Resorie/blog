@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title>Runtime Error</title>
+	<subtitle>Resory&#x27;s blog</subtitle>
+	<link href="https://resorie.github.io/blog/atom.xml" rel="self" type="application/atom+xml"/>
+	<link href="https://resorie.github.io/blog"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2026-01-01T00:00:00+00:00</updated>
+	<id>https://resorie.github.io/blog/atom.xml</id>
+	<entry xml:lang="en">
+		<title>To see the next part of the dream</title>
+		<published>2026-01-01T00:00:00+00:00</published>
+		<updated>2026-01-01T00:00:00+00:00</updated>
+		<link href="https://resorie.github.io/blog/posts/2025-end/" type="text/html"/>
+		<id>https://resorie.github.io/blog/posts/2025-end/</id>
+		<summary>2025 岁末随感。标题来自 Parannoul 的专辑。</summary>
+		
+	</entry>
+	<entry xml:lang="en">
+		<title>PE 随机做题寄录</title>
+		<published>2025-12-18T00:00:00+00:00</published>
+		<updated>2025-12-18T00:00:00+00:00</updated>
+		<link href="https://resorie.github.io/blog/posts/perec/" type="text/html"/>
+		<id>https://resorie.github.io/blog/posts/perec/</id>
+		<summary>Project Euler 随机做题记录。</summary>
+		
+	</entry>
+	<entry xml:lang="en">
+		<title>冒泡潜水</title>
+		<published>2025-12-10T00:00:00+00:00</published>
+		<updated>2025-12-10T00:00:00+00:00</updated>
+		<link href="https://resorie.github.io/blog/posts/mpqs/" type="text/html"/>
+		<id>https://resorie.github.io/blog/posts/mpqs/</id>
+		<summary>二次筛法 Quadratic Sieve</summary>
+		
+	</entry>
+	<entry xml:lang="en">
+		<title>模法</title>
+		<published>2025-07-23T00:00:00+00:00</published>
+		<updated>2025-07-23T00:00:00+00:00</updated>
+		<link href="https://resorie.github.io/blog/posts/mogic/" type="text/html"/>
+		<id>https://resorie.github.io/blog/posts/mogic/</id>
+		<summary>Montgomery Multiplications</summary>
+		
+	</entry>
+</feed>
