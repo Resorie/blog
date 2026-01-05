@@ -5,9 +5,6 @@ description = "Project Euler 随机做题记录。"
 
 [taxonomies]
 tags = ["数学", "数论"]
-
-[extra]
-pinned = true
 +++
 
 不定期持续（不保证）更新。
