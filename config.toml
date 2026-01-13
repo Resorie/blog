@@ -4,18 +4,12 @@ base_url = "https://resorie.github.io/blog"
 title = "Runtime Error"
 description = "Resory's blog"
 
-
 theme = "nivis"
 
 generate_feeds = true
-
 feed_filenames = ["rss.xml", "atom.xml"]
 
-# Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
-
-# Whether to build a search index to be used later on by a JavaScript library
-build_search_index = true
 
 taxonomies = [{ name = "tags", paginate_by = 5 }]
 
@@ -31,10 +25,9 @@ dark_theme = "one-dark-pro"
 extra_grammars = [ "themes/nivis/syntaxes/math-display.json" ]
 
 [extra]
-# Put all your custom variables here
 main_section = "posts"
 avatar = "images/avatar.jpeg"
-#math_display = "katex"        # or "mathjax"
+
 math_display = "mathjax"
 
 # Social links
