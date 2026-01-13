@@ -209,7 +209,10 @@ f(n)=\sum_{1\le y<n}[n\perp y]E(n,y)=\frac32\varphi(n)+2r(n)
 $$
 ```
 
+
 其中：
+
+
 
 ```math-display
 $$
@@ -233,6 +236,7 @@ $$
 $$
 ```
 
+
 回到和式，就变成简单莫反了。
 
 
@@ -247,21 +251,47 @@ $$
 $$
 ```
 
-`$\sum[xx'+yy'\le n]$` 可以用整除分块 `$O(n\sqrt n)$` 算出。
 
-复杂度：
+还需要计算 `$\sum_{x<y,x'<y'}[xx'+yy'\le n]$`。枚举 `$P=xx'\le(n-1)/2=L$`，将 `$y>x,y'>x'$` 的限制利用容斥拆开：
 
 ```math-display
 $$
-T(N)\approx O\left(\sum_{n\le \sqrt N}(N/n)^{3/2}\right)=O(N^{5/4})
+\begin{aligned}
+&\ \sum_{x<y,x'<y'}[xx'+yy'\le n]\\
+=&\ \sum_{xx'\le L}\left(\sum_{y,y'}[yy'\le n-xx'](1-[y\le x] - [y'\le x']+[y\le x,y'\le x'])\right)\\
+=&\ \sum_{x,x'\le L}\left(D(n-xx')-\sum_{y\le x}\lfloor\frac{n-xx'}{y}\rfloor-\sum_{y'\le x'}\lfloor\frac{n-xx'}{y'}\rfloor+xx'\right)\\
+=&\ \sum_{P=1}^{L}\left(d(P)(D(n-P)+d(p)P-2\sum_{x\mid P}\sum_{y\le x} \lfloor\frac{n-P}{y}\rfloor\right)
+\end{aligned}
 $$
 ```
 
-code（gemini 写的）：
+前面两项容易计算。最后一项拎出来计算：
+
+```math-display
+$$
+\begin{aligned}
+\sum_{P=1}^{L}\sum_{x\mid P}\sum_{y\le x}\lfloor\frac{n-P}y\rfloor
+=&\ \sum_{x=1}^L\sum_{k=1}^{L/x}\sum_{y=1}^x\lfloor\frac{n-kx}{y}\rfloor\\
+=&\ \sum_{y=1}^L\sum_{k=1}^{L/y}\sum_{x=y}^{L/k}\lfloor\frac{n-kx}{y}\rfloor\\
+=&\ \sum_{y=1}^L\sum_{k=1}^{L/y}\sum_{x=0}^{L/k-y}\lfloor\frac{n-k(L/k)+kx}{y}\rfloor
+\end{aligned}
+$$
+```
+
+最内层的一个和式可以类欧 `$O(\log n)$` 计算。枚举外面的两层进行求和，复杂度总共为 `$O(n\log^2 n)$`。
+
+复杂度（设 `$f(n)=O(n\log^2 n)$`）：
+
+```math-display
+$$
+T(N)\approx O\left(\sum_{n\le \sqrt N}f(n)+f(N/n)\right)=O(N\log^3 N)
+$$
+```
+
+
+code：
 
 ```cpp
-#include <algorithm>
-#include <cmath>
 #include <iostream>
 #include <vector>
 
@@ -269,170 +299,81 @@ using namespace std;
 
 typedef long long ll;
 
-const int MAXN = 5000005;
+const ll N = 5e6;
 
-// Global arrays for precomputed values
-int d_cnt[MAXN]; // d(k): number of divisors
-ll D_sum[MAXN];  // D(k): prefix sum of d(k)
-int mu[MAXN];    // Mobius function
-int primes[MAXN];
-int p_cnt = 0;
-bool is_prime[MAXN];
+std::vector<int> primes, mu;
+std::vector<ll> d, D;
 
-// Linear Sieve for Mobius and standard precomputation for Divisors
-// time: O(N)
-void precompute_all(int n) {
-    // 1. Linear Sieve for Mu
-    fill(is_prime, is_prime + n + 1, true);
-    is_prime[0] = is_prime[1] = false;
-    mu[1] = 1;
+void Init(int n) {
+    std::vector<bool> isp(n + 5, true);
+    std::vector<int> e(n + 5);
+    mu.resize(n + 5), d.resize(n + 5), D.resize(n + 5);
 
-    for (int i = 2; i <= n; ++i) {
-        if (is_prime[i]) {
-            primes[p_cnt++] = i;
-            mu[i] = -1;
-        }
-        for (int j = 0; j < p_cnt && i * primes[j] <= n; ++j) {
-            int p = primes[j];
-            is_prime[i * p] = false;
-            if (i % p == 0) {
+    mu[1] = d[1] = e[1] = 1;
+
+    auto append = [&](int p) {
+        primes.push_back(p), mu[p] = -1, d[p] = 2, e[p] = 1;
+    };
+
+    for (int i = 2; i <= n; i++) {
+        if (isp[i]) append(i);
+        for (int p : primes) {
+            if (i * p > n) break;
+            isp[i * p] = false;
+
+            if (!(i % p)) {
                 mu[i * p] = 0;
+                d[i * p] = d[i] / (e[i] + 1) * (e[i] + 2);
+                e[i * p] = e[i] + 1;
                 break;
-            } else {
-                mu[i * p] = -mu[i];
             }
+
+            mu[i * p] = -mu[i];
+            d[i * p] = d[i] * 2, e[i * p] = 1;
         }
     }
 
-    // 2. Compute divisor count d[i]
-    // Using harmonic loop is simple and sufficiently fast (O(N log N))
-    fill(d_cnt, d_cnt + n + 1, 0);
-    for (int i = 1; i <= n; ++i) {
-        for (int j = i; j <= n; j += i) {
-            d_cnt[j]++;
-        }
-    }
-
-    // 3. Compute prefix sums D[i]
-    D_sum[0] = 0;
-    for (int i = 1; i <= n; ++i) {
-        D_sum[i] = D_sum[i - 1] + d_cnt[i];
-    }
+    for (int i = 1; i <= n; i++)
+        D[i] = D[i - 1] + d[i], mu[i] += mu[i - 1];
 }
 
-// Calculates K(n) = sum_{x<y, x'<y'} [xx' + yy' <= n]
-// Logic adapted directly from sol.cpp
-ll calc_K(int N) {
-    if (N < 2) return 0;
+ll f(ll a, ll b, ll c, ll n) {
+    if (!a) return b / c * (n + 1);
+    if (a >= c || b >= c)
+        return n * (n + 1) / 2 * (a / c) + b / c * (n + 1) +
+               f(a % c, b % c, c, n);
+    ll m = (a * n + b) / c;
+    return n * m - f(c, c - b - 1, a, m - 1);
+}
 
-    ll ans = 0;
-    int limit = (N - 1) / 2;
+ll S(int n) {
+    ll res = 0, T = 0, L = (n - 1) / 2;
+    for (int p = 1; p <= (n - 1) / 2; p++)
+        res += d[p] * (D[n - p] + p);
 
-    // Term 1: sum d(P) * D(N-P) and Term 2: sum P * d(P)
-    for (int P = 1; P <= limit; ++P) {
-        ans += (ll)d_cnt[P] * D_sum[N - P];
-        ans += (ll)P * d_cnt[P];
-    }
-
-    // Term 3: -2 * sum_{P} sum_{x|P} H(x, N-P)
-    // Implemented using the sqrt decomposition strategy from sol.cpp
-    ll term3 = 0;
-    int sqrt_limit = sqrt(limit);
-
-    // Part A: x <= sqrt_limit
-    for (int x = 1; x <= sqrt_limit; ++x) {
-        int max_k = limit / x;
-        for (int k = 1; k <= max_k; ++k) {
-            int P = x * k;
-            int M = N - P;
-
-            // Calculate H(x, M) naively as x is small
-            ll h_val = 0;
-            for (int i = 1; i <= x; ++i) {
-                h_val += M / i;
-            }
-            term3 += h_val;
-        }
-    }
-
-    // Part B: x > sqrt_limit (implies k is small)
-    for (int k = 1; k <= limit / (sqrt_limit + 1); ++k) {
-        int min_x = sqrt_limit + 1;
-        int max_x = limit / k;
-
-        for (int x = min_x; x <= max_x; ++x) {
-            int P = x * k;
-            int M = N - P;
-
-            // Calculate H(x, M) using integer division blocking (整除分块)
-            // This is efficient because M is large
-            ll h_val = 0;
-            for (int l = 1, r; l <= x; l = r + 1) {
-                if (M / l == 0) {
-                    r = x;
-                } else {
-                    r = min(x, M / (M / l));
-                    h_val += (ll)(r - l + 1) * (M / l);
-                }
-            }
-            term3 += h_val;
-        }
-    }
-
-    ans -= 2 * term3;
-    return ans;
+    for (int y = 1; y <= L; y++)
+        for (int t = L / y, k = 1; k <= t; k++)
+            T += f(k, n - L / k * k, y, L / k - y);
+    return res - 2 * T;
 }
 
 int main() {
-    // Optimization for faster IO
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
+    Init(N);
 
-    int N = 5e6;
+    ll ans = N * (N + 1) / 2;
 
-    // 1. Precompute globals
-    precompute_all(N);
+    for (int i = 2; i <= N; i++)
+        ans += 3LL * (i - 1) / 2 * 2;
 
-    // 2. Calculate Part 1: sum_{x=2}^N floor(3(x-1)/2)
-    // Based on formula derived in pe433.md
-    ll sum_part1 = 0;
-    for (int x = 2; x <= N; ++x) {
-        sum_part1 += (3LL * (x - 1)) / 2;
+    for (int r, t, l = 1; l <= N; l = r + 1) {
+        t = N / l, r = N / t;
+        ans += 4LL * S(t) * (mu[r] - mu[l - 1]);
     }
 
-    // 3. Calculate Part 2: 2 * sum_{d} mu(d) * K(floor(N/d))
-    // Based on formula derived in pe433.md
-    ll sum_part2 = 0;
-    for (int d = 1; d <= N; ++d) {
-        if (mu[d] == 0) continue;
+    std::cout << ans << '\n';
 
-        int arg = N / d;
-        if (arg < 2) continue; // K(0) = K(1) = 0
-
-        ll k_val = calc_K(arg);
-
-        if (mu[d] == 1)
-            sum_part2 += k_val;
-        else
-            sum_part2 -= k_val;
-    }
-
-    // 4. Final Assembly
-    // S(N) = N(N+1)/2 + 2 * (Part1 + 2 * Part2)
-    // Note: The lower triangle sum E(x,y) = Part1 + 2*Part2
-    ll lower_triangle_sum = sum_part1 + 2 * sum_part2;
-    ll diagonal_sum = (ll)N * (N + 1) / 2;
-    ll total_ans = diagonal_sum + 2 * lower_triangle_sum;
-
-    cout << total_ans << endl;
-
-    cout << clock() * 1. / CLOCKS_PER_SEC << '\n';
-
+    std::cout << clock() * 1. / CLOCKS_PER_SEC << '\n';
     return 0;
 }
 ```
-
-
-
-
 
