@@ -44,5 +44,4 @@ social_links = [
     { name = "github", url = "https://github.com/resorie" },
     { name = "email", url = "mailto:resorie@qq.com" },
     { name = "bilibili", url = "https://space.bilibili.com/399133773" },
-    { name = "rss", url = "/atom.xml" },
 ]
