@@ -259,13 +259,13 @@ $$
 \begin{aligned}
 &\ \sum_{x<y,x'<y'}[xx'+yy'\le n]\\
 =&\ \sum_{xx'\le L}\left(\sum_{y,y'}[yy'\le n-xx'](1-[y\le x] - [y'\le x']+[y\le x,y'\le x'])\right)\\
-=&\ \sum_{x,x'\le L}\left(D(n-xx')-\sum_{y\le x}\lfloor\frac{n-xx'}{y}\rfloor-\sum_{y'\le x'}\lfloor\frac{n-xx'}{y'}\rfloor+xx'\right)\\
-=&\ \sum_{P=1}^{L}\left(d(P)(D(n-P)+d(p)P-2\sum_{x\mid P}\sum_{y\le x} \lfloor\frac{n-P}{y}\rfloor\right)
+=&\ \sum_{xx'\le L}\left(D(n-xx')-\sum_{y\le x}\lfloor\frac{n-xx'}{y}\rfloor-\sum_{y'\le x'}\lfloor\frac{n-xx'}{y'}\rfloor+xx'\right)\\
+=&\ \sum_{P=1}^{L}\left(d(P)D(n-P)+d(p)P-2\sum_{x\mid P}\sum_{y\le x} \lfloor\frac{n-P}{y}\rfloor\right)
 \end{aligned}
 $$
 ```
 
-前面两项容易计算。最后一项拎出来计算：
+其中 `$d(n)=\sum_{d\mid n}1,D(n)=\sum_{i=1}^nd(i)$`。前面两项容易计算。最后一项拎出来计算：
 
 ```math-display
 $$
