@@ -209,10 +209,7 @@ f(n)=\sum_{1\le y<n}[n\perp y]E(n,y)=\frac32\varphi(n)+2r(n)
 $$
 ```
 
-
 其中：
-
-
 
 ```math-display
 $$
@@ -236,7 +233,6 @@ $$
 $$
 ```
 
-
 回到和式，就变成简单莫反了。
 
 
@@ -251,7 +247,6 @@ $$
 $$
 ```
 
-
 `$\sum[xx'+yy'\le n]$` 可以用整除分块 `$O(n\sqrt n)$` 算出。
 
 复杂度：
@@ -262,7 +257,7 @@ T(N)\approx O\left(\sum_{n\le \sqrt N}(N/n)^{3/2}\right)=O(N^{5/4})
 $$
 ```
 
-code（AI 写的）：
+code（gemini 写的）：
 
 ```cpp
 #include <algorithm>
