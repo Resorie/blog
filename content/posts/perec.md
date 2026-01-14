@@ -295,8 +295,6 @@ code：
 #include <iostream>
 #include <vector>
 
-using namespace std;
-
 typedef long long ll;
 
 const ll N = 5e6;
