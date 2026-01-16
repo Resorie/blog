@@ -32,7 +32,7 @@ $$
 
 复杂度 `$O(\log n)$`。
 
-code：
+{% collapse(summary="code") %}
 
 ```python
 from functools import lru_cache
@@ -58,6 +58,7 @@ def solve2(N):
 
 print(solve2(N))
 ```
+{% end %}
 
 ## PE216 The Primality of `$2n^2-1$`
 
@@ -75,7 +76,8 @@ date: 12.18 diff: 45
 
 复杂度是常数比较小的 `$O(N\log\log N)$`。分块筛可以做到更小的时空复杂度。
 
-code:（没怎么优化，空间复杂度很大）
+{% collapse(summary="code") %}
+没怎么优化，空间复杂度很大
 
 ```cpp
 #include <bitset>
@@ -176,6 +178,7 @@ int main() {
     return 0;
 }
 ```
+{% end %}
 
 ## PE433 Steps in Euclid's Algorithm
 
@@ -288,8 +291,7 @@ T(N)\approx O\left(\sum_{n\le \sqrt N}f(n)+f(N/n)\right)=O(N\log^3 N)
 $$
 ```
 
-
-code：
+{% collapse(summary="code") %}
 
 ```cpp
 #include <iostream>
@@ -374,4 +376,19 @@ int main() {
     return 0;
 }
 ```
+{% end %}
 
+## PE443 GCD Sequence
+
+date: 26.1.16 diff: 30
+
+> [!NOTE]
+> 题意：$g(4)=13$, $g(n)=g(n-1)+\gcd(g(n-1), n)\quad(n\ge 5)$。
+>
+> 已知 $g(1000)=2524, g(1_000_000)=2624152$。求 $g(10^{15})$。
+
+观察数列的前几项，发现经常出现连续数字，说明这一段中的递推式中的 $\gcd$ 项都为 $1$。如果我们能知道这一段的长度，就可以快速地跳过这一段。
+
+假设这一段中的第一项为 $g(m)=m+k$。我们需要找到最小的 $t$，使 $\gcd(g(m+t),m+t+1)=\gcd(k-1,m+t+1)>1$。这里没有什么好方法，把 $k-1$ 所有的因数试一遍即可。
+
+这个数列的行为不太好估计。体感复杂度不太低，但是跑起来很快，几秒就出来了。
