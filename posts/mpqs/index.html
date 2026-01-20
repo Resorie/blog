@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>冒泡潜水 | Runtime Error</title>
+
+  
+  
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Noto+Sans+SC:wght@100..900&family=Noto+Serif+SC:wght@200..900&family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&family=Ysabeau:ital,wght@0,1..1000;1,1..1000&display=swap" rel="stylesheet"><link rel='stylesheet' href='https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkaibright/dist/LXGWBright-Regular/result.css' />
+  <link rel='stylesheet' href='https://chinese-fonts-cdn.deno.dev/packages/syst/dist/SourceHanSerifCN/result.css' />
+  <link rel='stylesheet' href='https://unpkg.com/ress/dist/ress.min.css'>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jQuery.mmenu/8.5.10/mmenu.min.css">
+  <link rel="stylesheet" href="https://resorie.github.io/blog/style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet">
+
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      },
+      chtml: {
+        fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2'
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-svg.js"></script>
+  <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          const MATH_LANGS = ['math', 'math-display'];
+
+          // 1. Display Math (``` ... ```)
+          document.querySelectorAll('pre code').forEach(el => {
+              let lang = el.dataset.lang || '';
+              if (!lang) {
+                  el.classList.forEach(cls => {
+                      if (cls.startsWith('language-')) lang = cls.replace('language-', '');
+                  });
+              }
+              
+              if (MATH_LANGS.includes(lang.toLowerCase())) {
+                  const pre = el.parentElement;
+                  const div = document.createElement('div');
+                  div.textContent = el.textContent.trim();
+                  pre.replaceWith(div);
+              }
+          });
+
+          // 2. Inline Math (`$ ... $`)
+          document.querySelectorAll('code').forEach(el => {
+              if (el.parentElement.tagName === 'PRE') return;
+
+              const text = el.textContent.trim();
+              // Check if it looks like math: $...$
+              if (text.startsWith('$') && text.endsWith('$') && !text.startsWith('$$')) {
+                  const span = document.createElement('span');
+                  span.textContent = text;
+                  el.replaceWith(span);
+              }
+          });
+          
+          // Trigger MathJax to process the new elements
+          if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+              MathJax.typesetPromise();
+          }
+      });
+  </script>
+  
+
+  
+<!-- Primary Meta Tags -->
+ 
+<meta
+  name="description"
+  content="二次筛法 Quadratic Sieve"
+/>
+
+<!-- Open Graph / Facebook -->
+<meta property="og:title" content="冒泡潜水 | Runtime Error" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://resorie.github.io/blog/posts/mpqs/" />
+
+<meta property="article:published_time" content="2025-12-10" />
+<meta property="article:modified_time" content="2025-12-10" />
+
+<meta property="article:section" content="posts" />
+<!--
+  
+    
+      
+        <meta property="article:tag" content="数论">
+      
+        <meta property="article:tag" content="密码学">
+      
+        <meta property="article:tag" content="算法">
+      
+    
+  
+-->
+
+
+</head>
+
+<body class="body-block">
+  <div id="sidebar-mask" onclick="toggleSidebar()"></div>
+  
+  <div id="sidebar" class="">
+    <div class="logo-title">
+      <div class="title-inner">
+        
+        <div class="avatar">
+          <img src="https://resorie.github.io/blog/images/avatar.jpeg" alt="avatar">
+        </div>
+        
+        <div class="title">
+          <h3><a href="https://resorie.github.io/blog/">Runtime Error</a></h3>
+          <div class="description">
+            <p>Resory&#x27;s blog</p>
+          </div>
+        </div>
+      </div>
+      <ul class="social-links">
+        
+        <li>
+          <a href="https://github.com/resorie" aria-label="Github">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+        
+        <li>
+          <a href="mailto:resorie@qq.com" aria-label="Email">
+            <i class="fas fa-envelope"></i>
+          </a>
+        </li>
+        
+        <li>
+          <a href="https://space.bilibili.com/399133773" aria-label="Bilibili">
+            <i class="fab fa-bilibili"></i>
+          </a>
+        </li>
+        
+      </ul>
+      <div class="sidebar-action">
+        <a href="https://resorie.github.io/blog/about/">About Me</a>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="https://resorie.github.io/blog/">Home</a>
+        <a href="https://resorie.github.io/blog/posts/">Posts</a>
+        <a href="https://resorie.github.io/blog/archive/">Archives</a>
+        <a href="https://resorie.github.io/blog/tags/">Categories</a>
+        <a href="https://resorie.github.io/blog/links/">Links</a>
+      </nav>
+    </div>
+  </div>
+  
+
+  <div id="main">
+    
+    <div class="page-top animated fadeInDown">
+      <nav class="nav">
+        <a href="https://resorie.github.io/blog/">Home</a>
+        <a href="https://resorie.github.io/blog/posts/" class="active">Posts</a>
+        <a href="https://resorie.github.io/blog/about/" >About</a>
+        <a href="https://resorie.github.io/blog/archive/" >Archives</a>
+        <a href="https://resorie.github.io/blog/tags/" >Categories</a>
+        <a href="https://resorie.github.io/blog/links/" >Links</a>
+      </nav>
+      <div class="information">
+        <div class="back_btn">
+          <a onclick="window.history.go(-1)" aria-label="Go back"><i class="fas fa-chevron-left"></i></a>
+        </div>
+        <div class="theme_btn">
+          <a onclick="toggleTheme()" aria-label="Toggle theme"><i class="fas fa-moon" id="theme-icon"></i></a>
+        </div>
+        <div class="feed_btn">
+          <a class="feed-icon" aria-label="RSS Feed"><i class="fas fa-rss"></i></a>
+          <div class="feed-dropdown">
+            <a href="https://resorie.github.io/blog/atom.xml" target="_blank">Atom</a>
+            <a href="https://resorie.github.io/blog/rss.xml" target="_blank">RSS</a>
+          </div>
+        </div>
+        <div class="avatar_btn">
+          <a onclick="toggleSidebar()" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="autopagerize_page_element">
+      <div class="content animated fadeIn ">
+         
+
+<article class="content-article">
+  <main class="article-content">
+    <div class="article-intro-container">
+        <div class="intro-header">
+            <h1 class="heading">冒泡潜水</h1>
+            <div class="meta-line">
+                
+                <span class="date">Dec. 10, 2025</span>
+                
+                
+                
+                <span class="separator">/</span>
+                <span class="tags">
+                
+                <a href="https://resorie.github.io/blog/tags/shu-lun/">#数论</a>
+                
+                <a href="https://resorie.github.io/blog/tags/mi-ma-xue/">#密码学</a>
+                
+                <a href="https://resorie.github.io/blog/tags/suan-fa/">#算法</a>
+                
+                </span>
+                
+            </div>
+        </div>
+
+        <div class="intro-body">
+            
+            <div class="intro-abstract">
+                <div class="abstract-title">ABSTRACT</div>
+                <p class="description">二次筛法 Quadratic Sieve</p>
+            </div>
+            
+
+            
+            <details class="intro-toc">
+                <summary class="toc-title">CONTENTS</summary>
+                <div class="toc-wrapper">
+                <ul class="toc-list">
+                    <li class="toc-root">
+                        <a href="#" class="active-toc">冒泡潜水</a>
+                        
+                        <ul>
+                            
+                            <li>
+                                <a href="https://resorie.github.io/blog/posts/mpqs/#preface">Preface</a>
+                                
+                            </li>
+                            
+                            <li>
+                                <a href="https://resorie.github.io/blog/posts/mpqs/#smooth-numbers">Smooth Numbers</a>
+                                
+                                <ul>
+                                    
+                                    <li>
+                                        <a href="https://resorie.github.io/blog/posts/mpqs/#smooth-number-de-mi-du">Smooth Number 的密度</a>
+                                        
+                                    </li>
+                                    
+                                </ul>
+                                
+                            </li>
+                            
+                            <li>
+                                <a href="https://resorie.github.io/blog/posts/mpqs/#quadratic-sieve">Quadratic Sieve</a>
+                                
+                                <ul>
+                                    
+                                    <li>
+                                        <a href="https://resorie.github.io/blog/posts/mpqs/#dixon-s-random-square-method">Dixon&#x27;s Random Square Method</a>
+                                        
+                                        <ul>
+                                            
+                                            <li>
+                                                <a href="https://resorie.github.io/blog/posts/mpqs/#fu-za-du-fen-xi">复杂度分析</a>
+                                            </li>
+                                            
+                                            <li>
+                                                <a href="https://resorie.github.io/blog/posts/mpqs/#the-l-notation">The L-notation</a>
+                                            </li>
+                                            
+                                            <li>
+                                                <a href="https://resorie.github.io/blog/posts/mpqs/#optimized-dixon">Optimized Dixon</a>
+                                            </li>
+                                            
+                                        </ul>
+                                        
+                                    </li>
+                                    
+                                    <li>
+                                        <a href="https://resorie.github.io/blog/posts/mpqs/#qs">QS</a>
+                                        
+                                        <ul>
+                                            
+                                            <li>
+                                                <a href="https://resorie.github.io/blog/posts/mpqs/#you-hua">优化</a>
+                                            </li>
+                                            
+                                            <li>
+                                                <a href="https://resorie.github.io/blog/posts/mpqs/#fu-za-du-fen-xi-1">复杂度分析</a>
+                                            </li>
+                                            
+                                        </ul>
+                                        
+                                    </li>
+                                    
+                                    <li>
+                                        <a href="https://resorie.github.io/blog/posts/mpqs/#mpqs">MPQS</a>
+                                        
+                                    </li>
+                                    
+                                    <li>
+                                        <a href="https://resorie.github.io/blog/posts/mpqs/#hmpqs">HMPQS</a>
+                                        
+                                    </li>
+                                    
+                                </ul>
+                                
+                            </li>
+                            
+                        </ul>
+                        
+                    </li>
+                </ul>
+                </div>
+            </details>
+            
+        </div>
+    </div>
+    
+    <p>填一个<a rel="external" href="https://www.luogu.com.cn/article/vy3tfjw4">坑</a>。这个鸽了三年多了。</p>
+<h2 id="preface">Preface</h2>
+<p>众所周知，Pollard-Rho 能以 <code>$O(n^{1/4}\log n)$</code> 的时间复杂度（通过一定优化能做到 <code>$O(n^{1/4})$</code>）找到合数 <code>$n$</code> 的一个非平凡因子。但事实上，我们有更快的方法做到这件事。</p>
+<p>本篇文章将介绍一种亚指数级复杂度分解质因数的算法：二次筛法（Quadratic Sieve, QS）。</p>
+<p>注：</p>
+<ul>
+<li>本篇文章中的复杂度分析将不包含对大整数进行运算的开销。</li>
+<li>本篇文章偏教程向，会混杂很多比较 trivial 的内容。</li>
+<li>其实我自己写的代码基本是贺的 zzt 的提交并加以修改。</li>
+</ul>
+<h2 id="smooth-numbers">Smooth Numbers</h2>
+<p>数论中，一般认为素数的性质是比较好的。比较自然地，研究合数时，我们会希望研究那些“比较素”的合数。</p>
+<p>对这样比较好的合数的刻画，容易会想到，使用素因子较少的合数。但这显然是荒谬的，因为质因数分解并不容易：对于大素数 <code>$p,q$</code>，合数 <code>$n=pq$</code> 很难被逆向表示为 <code>$p,q$</code>。</p>
+<p>因而，我们转向另一个方向：研究<em>素因子较小</em>的合数，这便引出了 <strong>smooth numbers</strong>。</p>
+<blockquote>
+<p>称一个数是 <code>$y\text{-smooth}$</code> 的，当且仅当其所有质因子不超过 <code>$n$</code>。</p>
+</blockquote>
+<p>容易发现，smooth number 的一个很好的性质是，它们容易被分解。我们只需简单筛出不超过阈值 <code>$y$</code> 的素数 <code>$p_1,p_2,\dots,p_k$</code>，便能通过简单的试除法（因为 <code>$y$</code> 相对较小，这些开销是可以承受的）确定 <code>$n$</code> 的分解。</p>
+<p>于是，我们会萌生一个想法：对于不 smooth 的 <code>$n$</code>，我们能否通过某些方法将其转化为比较 smooth 的数，再对其进行操作？想必，转化之后的操作应当是简单的。</p>
+<p>事实上，数论中许多算法，如 Index Calculus 和本篇文章所要介绍的 Quadratic Sieve 都基于这样的转化。</p>
+<h3 id="smooth-number-de-mi-du">Smooth Number 的密度</h3>
+<p>Smooth number 的密度由 Dickman 函数给出：</p>
+<pre class="giallo z-code"><code data-lang="math-display"><span class="giallo-l"><span>$</span><span>$</span></span>
+<span class="giallo-l"><span class="z-keyword z-control">\psi</span><span>(x,y):</span><span class="z-keyword z-operator">=</span><span class="z-keyword z-control">\left</span><span class="z-keyword z-operator">|</span><span class="z-keyword z-control">\left</span><span class="z-constant z-character z-escape">\{</span><span>i</span><span class="z-keyword z-control">\le</span><span> x</span><span class="z-keyword z-control">\mid</span><span> i </span><span class="z-keyword z-control">\text</span><span>{</span><span> is </span><span>}</span><span> y</span><span class="z-keyword z-control">\text</span><span>{</span><span class="z-keyword z-operator">-</span><span>smooth</span><span>}</span><span class="z-keyword z-control">\right</span><span class="z-constant z-character z-escape">\}</span><span class="z-keyword z-control">\right</span><span class="z-keyword z-operator">|</span></span>
+<span class="giallo-l"><span>$</span><span>$</span></span></code></pre>
+<p>当 <code>$x\to\infty$</code> 时，有：</p>
+<pre class="giallo z-code"><code data-lang="math-display"><span class="giallo-l"><span>$</span><span>$</span></span>
+<span class="giallo-l"><span class="z-keyword z-control">\psi</span><span>(x,y)</span><span class="z-keyword z-control">\sim</span><span> x </span><span class="z-keyword z-control">\rho</span><span>(u)</span><span class="z-keyword z-control">\quad</span><span class="z-keyword z-control">\text</span><span>{</span><span>where </span><span>}</span><span>x</span><span class="z-keyword z-operator">=</span><span>y</span><span class="z-keyword z-operator">^</span><span>u</span></span>
+<span class="giallo-l"><span>$</span><span>$</span></span></code></pre>
+<p>其中 <code>$\rho(u)$</code> 是 Dickman-de Brujin 函数。这表明，当 <code>$x$</code> 足够大时，smooth number 的密度不依赖于具体的 <code>$x,y$</code>，而只和 <code>$u=\frac{\ln x}{\ln y}$</code> 有关。</p>
+<p>Dickman 证明了如下估计：</p>
+<pre class="giallo z-code"><code data-lang="math-display"><span class="giallo-l"><span>$</span><span>$</span></span>
+<span class="giallo-l"><span class="z-keyword z-control">\rho</span><span>(u)</span><span class="z-keyword z-control">\approx</span><span> u</span><span class="z-keyword z-operator">^</span><span>{</span><span class="z-keyword z-operator">-</span><span>u</span><span class="z-keyword z-operator">+</span><span>o(u)</span><span>}</span></span>
+<span class="giallo-l"><span>$</span><span>$</span></span></code></pre>
+<p>证明涉及微分学，这里不作详细展开。</p>
+<h2 id="quadratic-sieve">Quadratic Sieve</h2>
+<h3 id="dixon-s-random-square-method">Dixon's Random Square Method</h3>
+<p>我们的算法基于以下思想：若能找到 <code>$\alpha^2\equiv \beta^2\pmod N$</code> 且 <code>$\alpha\not\equiv\pm \beta$</code>，那么 <code>$\gcd(\alpha+\beta,N)$</code> 能够给出一个 <code>$N$</code> 的非平凡因子。问题在于，我们如何生成这样的 <code>$\alpha, \beta$</code>。</p>
+<p>一个比较简单的想法是随机。我们随机这样的一个 <code>$\alpha_i$</code> 并计算 <code>$\gamma_i:=\alpha_i^2\bmod N$</code>，这是一个模 <code>$N$</code> 意义下的二次剩余。我们希望找到 <code>$\gamma_i$</code> 的一个非平凡平方根 <code>$\beta_i$</code>。假定 <code>$\gamma_i\perp N$</code>，那么 <code>$N$</code> 的每个质因子对应了 <code>$x^2\equiv \gamma_i$</code> 的两个根，因而找到的 <code>$\beta_i\equiv\pm \alpha_i$</code> 的概率只有 <code>$\frac{1}{2^{\omega(N)-1}}\le \frac 12$</code>。</p>
+<p>理想情况下，若 <code>$\gamma_i$</code> 是比较 smooth 的，我们可以对其分解 <code>$\gamma_i=\prod p_j^{e_{i,j}}$</code>。若 <code>$\forall j$</code> 有 <code>$2\mid e_{i,j}$</code>，那么我们可以轻易地令 <code>$\beta_i=\prod p_j^{e_{i,j}/2}$</code>，这便得到一组 <code>$\alpha,\beta$</code>。</p>
+<p>当然，我们运气应当不致于这么好，不仅 <code>$\gamma_i$</code> 是 smooth 的，而且 <code>$e_{i,j}$</code> 都是偶数。前者我们只能寄希望于概率，但是后者我们可以想想办法。考虑选取多个 <code>$\alpha_i$</code> 并计算 <code>$\gamma_i$</code>，再令向量 <code>$\boldsymbol v_i=(e_{i,1}\bmod 2,e_{i,2}\bmod 2,\dots,e_{i,k}\bmod 2)\in \mathbb Z_2^n$</code>。如果我们能找到一些线性相关的 <code>$\boldsymbol v_i$</code>，即存在指标集 <code>$I$</code> 使得 <code>$\sum_{i\in I}\boldsymbol v_i=\boldsymbol 0$</code>，那么可以取</p>
+<pre class="giallo z-code"><code data-lang="math-display"><span class="giallo-l"><span>$</span><span>$</span></span>
+<span class="giallo-l"><span class="z-keyword z-control">\begin</span><span>{</span><span>aligned</span><span>}</span></span>
+<span class="giallo-l"><span class="z-keyword z-control">\alpha</span><span>:</span><span class="z-keyword z-operator">=</span><span class="z-keyword z-operator">&amp;</span><span class="z-keyword z-control">\prod</span><span>_</span><span>{</span><span>i</span><span class="z-keyword z-control">\in</span><span> I</span><span>}</span><span class="z-keyword z-control">\alpha</span><span>_i</span><span class="z-constant z-character z-escape">\\</span><span class="z-constant z-character z-escape">\</span></span>
+<span class="giallo-l"><span class="z-keyword z-control">\gamma</span><span>:</span><span class="z-keyword z-operator">=</span><span class="z-keyword z-operator">&amp;</span><span class="z-keyword z-control"> \prod</span><span>_</span><span>{</span><span>i</span><span class="z-keyword z-control">\in</span><span> I</span><span>}</span><span class="z-keyword z-control">\gamma</span><span>_i</span><span class="z-keyword z-operator">=</span><span class="z-keyword z-control">\prod</span><span> p_j</span><span class="z-keyword z-operator">^</span><span>{</span><span class="z-keyword z-control">\sum</span><span>_</span><span>{</span><span>i</span><span class="z-keyword z-control">\in</span><span> I</span><span>}</span><span> e_</span><span>{</span><span>i,j</span><span>}</span><span>}</span><span class="z-constant z-character z-escape">\\</span></span>
+<span class="giallo-l"><span class="z-keyword z-control">\beta</span><span>:</span><span class="z-keyword z-operator">=</span><span class="z-keyword z-operator">&amp;</span><span class="z-keyword z-control">\prod</span><span> p_j</span><span class="z-keyword z-operator">^</span><span>{</span><span class="z-keyword z-control">\left</span><span>(</span><span class="z-keyword z-control">\sum</span><span>_</span><span>{</span><span>i</span><span class="z-keyword z-control">\in</span><span> I</span><span>}</span><span>e_</span><span>{</span><span>i,j</span><span>}</span><span class="z-keyword z-control">\right</span><span>)</span><span class="z-keyword z-operator">/</span><span class="z-constant z-numeric">2</span><span>}</span></span>
+<span class="giallo-l"><span class="z-keyword z-control">\end</span><span>{</span><span>aligned</span><span>}</span></span>
+<span class="giallo-l"><span>$</span><span>$</span></span></code></pre>
+<p>一般的实现中，可以令 <code>$\beta_i:=\prod p_j^{\left\lfloor e_{i,j} / 2\right\rfloor}$</code>，那么就有：</p>
+<pre class="giallo z-code"><code data-lang="math-display"><span class="giallo-l"><span>$</span><span>$</span></span>
+<span class="giallo-l"><span class="z-keyword z-control">\beta</span><span class="z-keyword z-operator">=</span><span class="z-keyword z-control">\prod</span><span>_</span><span>{</span><span>i</span><span class="z-keyword z-control">\in</span><span> I</span><span>}</span><span class="z-keyword z-control"> \beta</span><span>_i</span><span class="z-keyword z-control">\cdot</span><span class="z-keyword z-control">\prod</span><span> p_j</span><span class="z-keyword z-operator">^</span><span>{</span><span class="z-keyword z-control">\left</span><span>(</span><span class="z-keyword z-control">\sum</span><span>_</span><span>{</span><span>i</span><span class="z-keyword z-control">\in</span><span> I</span><span>}</span><span>e_</span><span>{</span><span>i,j</span><span>}</span><span class="z-keyword z-control">\bmod</span><span class="z-constant z-numeric"> 2</span><span class="z-keyword z-control">\right</span><span>) </span><span class="z-keyword z-operator">/</span><span class="z-constant z-numeric"> 2</span><span>}</span></span>
+<span class="giallo-l"><span>$</span><span>$</span></span></code></pre>
+<p>假设选取的 smooth 阈值为 <code>$B$</code>，那么我们就是有若干个 <code>$\pi(B)$</code> 维的向量。只要我们找到 <code>$\pi(B)+k$</code> 个向量，我们就能通过高斯消元找出 <code>$k$</code> 组 <code>$\alpha,\beta$</code>，每组至少有 <code>$\frac 12$</code> 概率成功分解，那么总的分解成功概率就是 <code>$1-2^{-k}$</code>。</p>
+<h4 id="fu-za-du-fen-xi">复杂度分析</h4>
+<p><del>我被一篇傻逼文献骗了好久</del></p>
+<p>显然该方法的复杂度依赖于阈值 <code>$B$</code> 的选取。为方便计算，令 <code>$k = \pi(B),u=\frac{\ln N}{\ln B}$</code>。</p>
+<p><code>$\gamma_i=\alpha_i^2\bmod N$</code> 是模 <code>$N$</code> 的二次剩余，它大约在 <code>$1\sim N$</code> 中均匀分布，因此我们可以用前面的 smooth number 密度公式估算它 smooth 的概率，即 <code>$u^{-u}$</code>。我们需要找到 <code>$O(k)=O\left(\frac{B}{\ln B}\right)$</code> 个向量。每次尝试需要 <code>$k$</code> 次试除。最后，我们需要进行高斯消元。故可得到：</p>
+<pre class="giallo z-code"><code data-lang="math-display"><span class="giallo-l"><span>$</span><span>$</span></span>
+<span class="giallo-l"><span>T</span><span class="z-keyword z-control">\approx</span><span> k</span><span class="z-keyword z-operator">^</span><span>2u</span><span class="z-keyword z-operator">^</span><span>u</span><span class="z-keyword z-operator">+</span><span>k</span><span class="z-keyword z-operator">^</span><span class="z-constant z-numeric">3</span></span>
+<span class="giallo-l"><span>$</span><span>$</span></span></code></pre>
+<p>这种式子谁爱算谁算，我扔给 AI 了。算出来 <code>$T$</code> 最小时有：</p>
+<pre class="giallo z-code"><code data-lang="math-display"><span class="giallo-l"><span>$</span><span>$</span></span>
+<span class="giallo-l"><span>B</span><span class="z-keyword z-control">\approx</span><span class="z-keyword z-control"> \exp</span><span>(</span><span class="z-keyword z-control">\frac</span><span class="z-constant z-numeric"> 1</span><span>{</span><span class="z-keyword z-control">\sqrt</span><span>2</span><span>}</span><span class="z-keyword z-control">\sqrt</span><span>{</span><span class="z-keyword z-control">\ln</span><span> N</span><span class="z-keyword z-control">\cdot</span><span class="z-keyword z-control">\ln</span><span class="z-keyword z-control">\ln</span><span> N</span><span>}</span><span>) </span><span class="z-constant z-character z-escape">\\</span></span>
+<span class="giallo-l"><span>T</span><span class="z-keyword z-control">\approx</span><span class="z-keyword z-control">\exp</span><span>(</span><span class="z-keyword z-control">\frac</span><span class="z-constant z-numeric"> 3</span><span>{</span><span class="z-keyword z-control">\sqrt</span><span>2</span><span>}</span><span class="z-keyword z-control">\sqrt</span><span>{</span><span class="z-keyword z-control">\ln</span><span> N</span><span class="z-keyword z-control">\cdot</span><span class="z-keyword z-control">\ln</span><span class="z-keyword z-control">\ln</span><span> N</span><span>}</span><span>)</span></span>
+<span class="giallo-l"><span>$</span><span>$</span></span></code></pre><h4 id="the-l-notation">The L-notation</h4>
+<p>细心的读者容易发现上面的 <code>$B$</code> 和 <code>$T$</code> 有相似的结构。事实上，这种结构的渐进表示在 smooth number 相关算法中相当常见。</p>
+<p>一般地，我们定义 <strong>L-notation</strong>：</p>
+<pre class="giallo z-code"><code data-lang="math-display"><span class="giallo-l"><span>$</span><span>$</span></span>
+<span class="giallo-l"><span>L_n[</span><span class="z-keyword z-control">\alpha</span><span>, c]:</span><span class="z-keyword z-operator">=</span><span class="z-keyword z-control">\exp</span><span class="z-keyword z-control">\left</span><span>(</span><span class="z-keyword z-control">\left</span><span>(c</span><span class="z-keyword z-operator">+</span><span>o(</span><span class="z-constant z-numeric">1</span><span>)</span><span class="z-keyword z-control">\right</span><span>)</span><span class="z-keyword z-control">\left</span><span>(</span><span class="z-keyword z-control">\ln</span><span> n</span><span class="z-keyword z-control">\right</span><span>)</span><span class="z-keyword z-operator">^</span><span class="z-keyword z-control">\alpha</span><span class="z-keyword z-control">\left</span><span>(</span><span class="z-keyword z-control">\ln</span><span class="z-keyword z-control"> \ln</span><span> n</span><span class="z-keyword z-control">\right</span><span>)</span><span class="z-keyword z-operator">^</span><span>{</span><span class="z-constant z-numeric">1</span><span class="z-keyword z-operator">-</span><span class="z-keyword z-control">\alpha</span><span>}</span><span class="z-keyword z-control">\right</span><span>)</span><span class="z-keyword z-control">\quad</span><span class="z-keyword z-control"> \text</span><span>{</span><span>where </span><span>}</span><span>c</span><span class="z-keyword z-operator">&gt;</span><span class="z-constant z-numeric">0</span><span>, </span><span class="z-constant z-numeric">0</span><span class="z-keyword z-control">\le</span><span class="z-keyword z-control">\alpha</span><span class="z-keyword z-control">\le</span><span>1</span></span>
+<span class="giallo-l"><span>$</span><span>$</span></span></code></pre>
+<p>该函数的增长量级主要由 <code>$\alpha$</code> 控制：</p>
+<ul>
+<li><code>$\alpha=1$</code> 时，<code>$L_n[1,c]=O\left(n^{c+o(1)}\right)$</code>（指数级复杂度）</li>
+<li><code>$\alpha=0$</code> 时，<code>$L_n[0,c]=O\left((\ln n)^{c+o(1)}\right)=O(\text{polylog})$</code></li>
+<li><code>$\alpha\in(0,1)$</code> 时，<code>$L_n[\alpha,c]$</code> 表示亚指数级复杂度。</li>
+</ul>
+<p>于是我们可以重新表示上面结果中的 <code>$B,T$</code>：</p>
+<pre class="giallo z-code"><code data-lang="math-display"><span class="giallo-l"><span>$</span><span>$</span></span>
+<span class="giallo-l"><span>B</span><span class="z-keyword z-operator">=</span><span>L_N</span><span class="z-keyword z-control">\left</span><span>[</span><span class="z-keyword z-control">\frac</span><span class="z-constant z-numeric"> 12</span><span>,</span><span class="z-keyword z-control">\frac</span><span>1</span><span>{</span><span class="z-keyword z-control">\sqrt</span><span class="z-constant z-numeric"> 2</span><span>}</span><span class="z-keyword z-control">\right</span><span>]</span><span class="z-constant z-character z-escape">\\</span></span>
+<span class="giallo-l"><span>T</span><span class="z-keyword z-operator">=</span><span>L_N</span><span class="z-keyword z-control">\left</span><span>[</span><span class="z-keyword z-control">\frac</span><span class="z-constant z-numeric"> 12</span><span>,</span><span class="z-keyword z-control">\frac</span><span>3</span><span>{</span><span class="z-keyword z-control">\sqrt</span><span>2</span><span>}</span><span class="z-keyword z-control">\right</span><span>]</span></span>
+<span class="giallo-l"><span>$</span><span>$</span></span></code></pre>
+<p>读者可以自行尝试证明该算法复杂度的另一种方法：设 <code>$B=L_N[1/2,c]$</code> 并带入以上复杂度式子，解出 <code>$c$</code>。</p>
+<h4 id="optimized-dixon">Optimized Dixon</h4>
+<p>朴素的 Dixon 方法使用了随机选取的 <code>$\alpha$</code>，因而 <code>$\gamma:=\alpha^2\bmod N$</code> 的 smoothness 似乎没有保证。我们会希望使用更好的 <code>$\alpha$</code> 来优化这一点。</p>
+<p>一个比较显然的想法是选择 <code>$\alpha_i=\left\lceil \sqrt N\right\rceil+i$</code>。当 <code>$i$</code> 不太大时，这样得到的 <code>$\gamma_i\sim2i\sqrt N$</code> 比较小，应当会比较 smooth。</p>
+<p>假设我们需要 <code>$M$</code> 个这样的 <code>$\alpha_i$</code>，那么应当有 <code>$\gamma_i \sim 2M\sqrt N$</code>，以这个数为上限套用之前的 smooth number 密度公式，计算得到，当 <code>$B=L_N[1/2,1/2]$</code> 时，有 <code>$T\approx L_N[1/2,3/2]$</code>。</p>
+<p><a rel="external" href="https://loj.ac/s/2472888">一个未作太多优化的实现</a></p>
+<h3 id="qs">QS</h3>
+<p>以上的算法在 <code>$N\approx 10^{30}$</code> 时就略显吃力。我们当然不满足于此。</p>
+<p>注意到上面算法的复杂度瓶颈在于，对于每个 <code>$\alpha_i$</code>，我们都必须通过试除法确定 <code>$\gamma_i$</code> 是否是 smooth 的。由于选取合适的 <code>$\alpha_i$</code> 需要大量的尝试，这样反复试除的开销会变得不可接受。考虑如何减少试除次数。</p>
+<p>我们都知道求质数可以用筛法，其实求 smooth 数也可以。更进一步，我们还可以筛多项式（因为 <code>$p\mid f(c)\Leftrightarrow p\mid f(kp+c)$</code>），比如一般的埃氏筛就是在筛 <code>$f(i)=i$</code>（如果跳过偶数可看作在筛 <code>$f(i)=2i+1$</code>）。</p>
+<p>考察这样一个多项式：<code>$f(x)=x^2-N$</code>。当 <code>$i$</code> 较小时，有 <code>$f\left(\left\lceil\sqrt N\right\rceil+i\right)=\alpha_i^2\bmod N$</code>。我们希望筛一下它来优化上面的 Optimized Dixon 中的试除法。</p>
+<p>类似埃氏筛地，我们枚举小质数 <code>$p$</code>。若 <code>$p^k\mid f(i)$</code> 就将 <code>$p^k$</code> 从 <code>$f(i)$</code> 的值中除去，筛完一遍变成 <code>$1$</code> 的就是 smooth 的 <code>$f(i)$</code>。若我们有 <code>$c$</code> 是 <code>$N$</code> 在模 <code>$p$</code> 意义下的二次剩余，那么当且仅当 <code>$x\equiv \pm c\pmod p$</code> 时会有 <code>$p\mid f(x)$</code>，枚举每个 <code>$x$</code> 并筛去 <code>$p$</code> 即可。</p>
+<p><a rel="external" href="https://loj.ac/s/2473437">一个实现</a></p>
+<h4 id="you-hua">优化</h4>
+<p>对 QS 的改进方案中，提升较大的是选择更好的多项式去筛，这点留待后文详叙。这里讲几个小优化。</p>
+<ol>
+<li><code>$f(i)$</code> 和 <code>$f(-i)$</code> 可以一起筛。注意消元的时候要把负号消掉。</li>
+<li>注意到 <code>$p\mid f(i)$</code> 当且仅当 <code>$N$</code> 是模 <code>$p$</code> 意义下的二次剩余，因此在筛小素数时可以算一下 Legendre 符号 <code>$\left(\frac  Np \right)$</code>，如果不为 <code>$1$</code> 这个素数就是没用的。</li>
+<li>如果 <code>$f(i)$</code> 除掉小质数还剩一个不太大的数（一般的阈值是 <code>$B^2$</code>），可以把剩下这个值扔到 <code>std::unordered_map</code> 里。如果后面找到的 <code>$f(j)$</code> 剩下同样的数，那么可以使用 <code>$f(i)f(j)$</code>，这个剩下的值就被平方了，乘到 <code>$\beta$</code> 里即可。（Lenstra 等提出，数据范围足够大时，可以尝试将除剩下的数分解为两个不大于 <code>$B^2$</code> 的数的乘积，并放到图上求解<sup class="footnote-reference" id="fr-1-1"><a href="#fn-1">1</a></sup>）</li>
+<li>为了节省空间，我们在筛 <code>$f$</code> 时通常无法直接算出 <code>$\beta_i$</code> 和 <code>$\boldsymbol v_i$</code>，而需要对筛出的 smooth 的 <code>$f$</code> 再进行一次试除。这就使得筛 <code>$f$</code> 时的一堆大整数除法有点意义不明。可以考虑使筛 <code>$f$</code> 的条件变松：我们计算其对数，如果 $\log f(i) $ 减去 $ \sum_{p_j\mid f(i)}\log p_j$ 比较小，那么这个 <code>$f(i)$</code> 大概会比较 smooth，再对其进行试除即可。</li>
+<li>朴素的高斯消元会成为算法的复杂度瓶颈。注意到 <code>$\boldsymbol v_i$</code> 中至多有 <code>$O(\log N)$</code> 个数非零，这说明我们最终要进行高斯消元的矩阵是一个稀疏矩阵。可以使用 Block Wiedemann 或 Block Lanczos 算法（Montgomery 给出过一种为素因数分解特化的在 <code>$GF(2)$</code> 上的 Block Lanczos<sup class="footnote-reference" id="fr-2-1"><a href="#fn-2">2</a></sup>）将消元部分复杂度降至 <code>$O(k^2\log N)$</code>。实现中可以使用 <code>std::bitset</code> 优化的在线高斯消元，性能不会有明显劣势。</li>
+</ol>
+<h4 id="fu-za-du-fen-xi-1">复杂度分析</h4>
+<p>同 Dixon，我们需要筛出 <code>$O(k)$</code> 个数，每个数成功概率为 <code>$u^{-u}$</code>，筛每个数的成本为 <code>$\sum_{p\le B}p^{-1}=O(\log\log B)$</code>。高斯消元复杂度 <code>$O(k^2\log N)$</code>。故有：</p>
+<pre class="giallo z-code"><code data-lang="math-display"><span class="giallo-l"><span>$</span><span>$</span></span>
+<span class="giallo-l"><span>T</span><span class="z-keyword z-control">\approx</span><span> ku</span><span class="z-keyword z-operator">^</span><span>u</span><span class="z-keyword z-control">\log</span><span class="z-keyword z-control">\log</span><span> B</span><span class="z-keyword z-operator">+</span><span>k</span><span class="z-keyword z-operator">^</span><span class="z-constant z-numeric">2</span><span class="z-keyword z-control">\log</span><span> N</span></span>
+<span class="giallo-l"><span>$</span><span>$</span></span></code></pre>
+<p>当 <code>$T$</code> 最小时，有：</p>
+<pre class="giallo z-code"><code data-lang="math-display"><span class="giallo-l"><span>$</span><span>$</span></span>
+<span class="giallo-l"><span>B</span><span class="z-keyword z-control">\approx</span><span class="z-keyword z-control"> \exp</span><span>(</span><span class="z-keyword z-control">\frac</span><span class="z-constant z-numeric"> 12</span><span class="z-keyword z-control">\sqrt</span><span>{</span><span class="z-keyword z-control">\log</span><span> N</span><span class="z-keyword z-control">\log</span><span class="z-keyword z-control">\log</span><span> N</span><span>}</span><span>)</span><span class="z-keyword z-operator">=</span><span>L_N</span><span class="z-keyword z-control">\left</span><span>[</span><span class="z-keyword z-control">\frac</span><span class="z-constant z-numeric"> 12</span><span>,</span><span class="z-keyword z-control">\frac</span><span>12</span><span class="z-keyword z-control">\right</span><span>]</span><span class="z-constant z-character z-escape">\\</span></span>
+<span class="giallo-l"><span>T</span><span class="z-keyword z-control">\approx</span><span class="z-keyword z-control">\exp</span><span>(</span><span class="z-keyword z-control">\sqrt</span><span>{</span><span class="z-keyword z-control">\log</span><span> N</span><span class="z-keyword z-control">\log</span><span class="z-keyword z-control"> \log</span><span> N</span><span>}</span><span>)</span><span class="z-keyword z-operator">=</span><span> L_N</span><span class="z-keyword z-control">\left</span><span>[</span><span class="z-keyword z-control">\frac</span><span class="z-constant z-numeric"> 12</span><span>,</span><span class="z-constant z-numeric">1</span><span class="z-keyword z-control">\right</span><span>]</span></span>
+<span class="giallo-l"><span>$</span><span>$</span></span></code></pre><h3 id="mpqs">MPQS</h3>
+<p>Multiple Polynomial Quadratic Sieve，简称 MPQS <del>（标题冒泡潜水的由来）</del>。</p>
+<p>朴素 QS 的问题是，当 <code>$N$</code> 较大时，我们需要筛的 <code>$f(i)$</code> 个数（设为 <code>$M$</code>）会较大，而 <code>$f(i)\sim 2M\sqrt N$</code> 也会较大，这使得 <code>$f$</code> 较 smooth 的猜想不再成立。为了解决这个问题，Montgomery 提出：我们可以筛多个多项式。</p>
+<p>具体而言，我们希望用一个线性函数 <code>$ax+b$</code> 替代之前的 <code>$x$</code>，即考虑 <code>$(ax+b)^2-N$</code>。如果 <code>$b^2\equiv N\pmod a$</code>，那么 <code>$(ax+b)^2-n$</code> 可以写成 <code>$af(x)=a(ax^2+2bx+c)$</code> 的形式，其中 <code>$b^2-ac=N$</code>。为了方便处理，我们设 <code>$a$</code> 是一个 smooth 数的平方（比如 <code>$p^2$</code>，也有文献建议取一系列小素数乘积的平方），那么我们只需要去筛 smooth 的 <code>$f(x)$</code>。</p>
+<p>假设我们只去筛 <code>$|x|\le M$</code> 的 <code>$x$</code>。与之前同样地，我们希望使 <code>$|f(x)|$</code> 较小以使得其较 smooth。根据中学数学知识，我们会希望抛物线对称轴 <code>$x=-\frac ba$</code> 靠近所筛区间 <code>$[-M,M]$</code> 的中点 <code>$x=0$</code>，这要求 <code>$b$</code> 较小。另外，我们希望区间端点和中点处 <code>$|f(x)|$</code> 值相近，即 <code>$|f(M)|\approx |f(0)|$</code>，解出 <code>$a\approx\frac{\sqrt{2N}}{M}$</code>。</p>
+<p>实现中，我们可以从 <code>$\frac{(2N)^{1/4}}{M^{1/2}}$</code> 开始枚举小素数 <code>$p$</code>，令 <code>$a=p^2$</code>，取 <code>$b$</code> 为 <code>$b^2\equiv N\pmod a$</code> 的较小解，再算出 <code>$c$</code>。然后按照 QS 的方法筛 <code>$(ax+b)^2-N$</code> 即可。</p>
+<p>MPQS 相比于 QS 复杂度不变，但有较大常数优势。zzq 说有分析认为提升倍数是 <code>$\frac 12\sqrt{\ln N\ln\ln N}$</code>，我不知道是怎么算出来的。</p>
+<p><a rel="external" href="https://loj.ac/s/316691">zzt 的实现</a></p>
+<h3 id="hmpqs">HMPQS</h3>
+<p>The Hypercube variation of Multiple Polynomial Quadratic Sieve，简称 HMPQS。</p>
+<p>Peralta 提出，MPQS 中切换多项式还要重算一遍 <code>$b,c$</code> 之类的，比较麻烦。考虑生成一些有联系的多项式来消灭掉这个代价。<del>其实和 Hypercube 没啥必然联系，Peralta 为了容易理解随便举的例子</del></p>
+<p>我们发扬光大一下 MPQS 中的一个细节。令 <code>$t$</code> 为 <code>$n$</code> 个素数的乘积（<code>$t:=\prod_{i=1}^nq_i$</code>），且 <code>$t\sim N^{1/4}$</code>。假设 <code>$a=t^2$</code>，<code>$b$</code> 为方程 <code>$b^2\equiv N\pmod {t^2}$</code> 的一个解。显然这里 <code>$b$</code> 有 <code>$2^n$</code> 个解。我们希望这样所生成出的 <code>$2^n$</code> 个 <code>$(ax+b)^2$</code> 有比较好的性质。</p>
+<p>首先考虑如何表示 <code>$b$</code>。由 CRT，只需解出 <code>$\alpha_i^2\equiv N\pmod {q_i^2}$</code>，那么就可以令 <code>$b=\sum \delta_i\alpha_i\beta_i$</code>，其中 <code>$\delta_i=\pm1$</code>，<code>$\beta_i$</code> 是 CRT 算出的系数。<code>$\alpha_i$</code> 有两个解，此处我们选择使得 <code>$\gamma_i:=\alpha_i\beta_i\bmod t^2\le\frac{t^2}2$</code> 的解。</p>
+<p>然后考虑如何遍历所有的 <code>$b$</code>。令数列 <code>$s_1,\dots,s_{2^n}$</code> 遍历所有的 <code>$b$</code> 解。我们希望遍历过程中每次只更改一个 <code>$\delta_i$</code>，那么可以有递推关系：</p>
+<pre class="giallo z-code"><code data-lang="math-display"><span class="giallo-l"><span>$</span><span>$</span></span>
+<span class="giallo-l"><span>s_</span><span>{</span><span>i</span><span class="z-keyword z-operator">+</span><span class="z-constant z-numeric">1</span><span>}</span><span class="z-keyword z-operator">=</span><span>s_i</span><span class="z-keyword z-operator">+</span><span class="z-constant z-numeric">2</span><span class="z-keyword z-control">\mu</span><span>_i</span><span class="z-keyword z-control">\gamma</span><span>_</span><span>{</span><span>k_i</span><span>}</span><span class="z-keyword z-operator">-</span><span class="z-keyword z-control">\omega</span><span>_it</span><span class="z-keyword z-operator">^</span><span class="z-constant z-numeric">2</span></span>
+<span class="giallo-l"><span>$</span><span>$</span></span></code></pre>
+<p>其中 <code>$\mu_i=\pm 1$</code>，代表 <code>$\delta_{k_i}$</code> 的改变。Peralta 的叙述中把这个递推关系理解为 <code>$n$</code> 维 Hypercube 上的一个 Hamilton 路径，<code>$\mu_i$</code> 代表第 <code>$k_i$</code> 维坐标的改变；当然其实还有其他理解方法，比如相信大家都知道格雷码，原理是类似的。<code>$\omega_i$</code> 可以理解为对 <code>$t^2$</code> 取模的一个修正系数，使得 <code>$s_{i+1}\in(0,t^2)$</code>。由之前对 <code>$\alpha_i$</code> 的选择，有 <code>$\omega_i\in\{\pm 1,0\}$</code>。一般的实现中可以直接取 <code>$\omega_i\equiv 0$</code>，此时仍有 <code>$s_i\in(-nt^2,nt^2)$</code>。</p>
+<p>当然我们并不关心具体值。在筛法中，<code>$s_i$</code> 作为多项式的系数，我们关心其模 <code>$p$</code> 意义下的值。Peralta 提出，为了方便计算 <code>$s_i\bmod p$</code>，我们可以打表一下其差分。令：</p>
+<pre class="giallo z-code"><code data-lang="math-display"><span class="giallo-l"><span>$</span><span>$</span></span>
+<span class="giallo-l"><span class="z-keyword z-control">\Delta</span><span>_i:</span><span class="z-keyword z-operator">=</span><span>s_</span><span>{</span><span>i</span><span class="z-keyword z-operator">+</span><span class="z-constant z-numeric">1</span><span>}</span><span class="z-keyword z-operator">-</span><span>s_i</span><span class="z-keyword z-operator">=</span><span class="z-constant z-numeric">2</span><span class="z-keyword z-control">\mu</span><span>_i</span><span class="z-keyword z-control">\gamma</span><span>_</span><span>{</span><span>k_i</span><span>}</span><span class="z-keyword z-operator">-</span><span class="z-keyword z-control">\omega</span><span>_it</span><span class="z-keyword z-operator">^</span><span class="z-constant z-numeric">2</span></span>
+<span class="giallo-l"><span>$</span><span>$</span></span></code></pre>
+<p>注意到 <code>$\mu_i$</code> 有两种取值，<code>$\omega_i$</code> 有三种取值，<code>$\gamma_i$</code> 有 <code>$n$</code> 种取值，那么 <code>$\Delta_i$</code> 至多有 <code>$6n$</code> 种取值（如果固定 <code>$\omega_i=0$</code> 则只有 <code>$2n$</code> 种）。这个可以打表算出来。那么转移就只需极小的代价。</p>
+<p>现在可以构造我们需要的多项式了。对 MPQS 中的多项式略作变换，除掉 <code>$a$</code> 这个平方因子，就得到我们构造的多项式：</p>
+<pre class="giallo z-code"><code data-lang="math-display"><span class="giallo-l"><span>$</span><span>$</span></span>
+<span class="giallo-l"><span class="z-keyword z-control">\begin</span><span>{</span><span>aligned</span><span>}</span></span>
+<span class="giallo-l"><span>f_i(x):</span><span class="z-keyword z-operator">=</span><span class="z-keyword z-operator">&amp;</span><span class="z-constant z-character z-escape">\ </span><span>(s_i</span><span class="z-keyword z-operator">/</span><span>t</span><span class="z-keyword z-operator">+</span><span>x t)</span><span class="z-keyword z-operator">^</span><span class="z-constant z-numeric">2</span><span class="z-keyword z-control">\bmod</span><span> N</span><span class="z-constant z-character z-escape">\\</span></span>
+<span class="giallo-l"><span class="z-keyword z-operator">=</span><span class="z-keyword z-operator">&amp;</span><span class="z-constant z-character z-escape">\ </span><span class="z-keyword z-control">\frac</span><span>{</span><span>s_i</span><span class="z-keyword z-operator">^</span><span class="z-constant z-numeric">2</span><span class="z-keyword z-operator">-</span><span>N</span><span>}</span><span>{</span><span>t</span><span class="z-keyword z-operator">^</span><span class="z-constant z-numeric">2</span><span>}</span><span class="z-keyword z-operator">+</span><span>2s_ix</span><span class="z-keyword z-operator">+</span><span>x</span><span class="z-keyword z-operator">^</span><span>2t</span><span class="z-keyword z-operator">^</span><span class="z-constant z-numeric">2</span></span>
+<span class="giallo-l"><span class="z-keyword z-control">\end</span><span>{</span><span>aligned</span><span>}</span></span>
+<span class="giallo-l"><span>$</span><span>$</span></span></code></pre>
+<p>我们仍须验证这样生成的 <code>$f_i(x)$</code> 不太大，以保证其 smooth 的概率。假设我们要筛的区间是 <code>$x\in[-M,M]$</code>，我们取 <code>$t\le\frac{N^{1/4}}{\sqrt M}$</code>。由于 <code>$s_i^2&lt;t^4&lt;N$</code>，通过简单放缩可以得到 <code>$\frac{s_i^2-N}{t^2}&lt;0$</code> 且 <code>$\left|\frac{s_i^2-N}{t^2}\right|\le M\sqrt N$</code>。二次项 <code>$x^2t^2\le M^2\left(\frac{N^{1/4}}{\sqrt M}\right)^2=M\sqrt N$</code>。一次项 <code>$2s_ix\le 2M\sqrt N$</code>。因此我们大概有 <code>$f_i(x)=O(M\sqrt N)$</code>，这说明其值不太大，也就保证其大概比较 smooth。</p>
+<p>在筛法中，令 <code>$p\mid f_i(x)$</code>，容易得到 <code>$x\equiv(-s_i\pm\sqrt N)t^{-2}\pmod p$</code>。这就得到筛 <code>$f_i(x)$</code> 的两个起点：</p>
+<pre class="giallo z-code"><code data-lang="math-display"><span class="giallo-l"><span>$</span><span>$</span></span>
+<span class="giallo-l"><span>D_i</span><span class="z-keyword z-operator">=</span><span>(</span><span class="z-keyword z-operator">-</span><span>s_i</span><span class="z-keyword z-operator">+</span><span class="z-keyword z-control">\sqrt</span><span> N)t</span><span class="z-keyword z-operator">^</span><span>{</span><span class="z-keyword z-operator">-</span><span class="z-constant z-numeric">2</span><span>}</span><span class="z-keyword z-control">\bmod</span><span> p</span><span class="z-constant z-character z-escape">\\</span></span>
+<span class="giallo-l"><span>E_i</span><span class="z-keyword z-operator">=</span><span>(</span><span class="z-keyword z-operator">-</span><span>s_i</span><span class="z-keyword z-operator">-</span><span class="z-keyword z-control">\sqrt</span><span> N)t</span><span class="z-keyword z-operator">^</span><span>{</span><span class="z-keyword z-operator">-</span><span class="z-constant z-numeric">2</span><span>}</span><span class="z-keyword z-control">\bmod</span><span> p</span><span class="z-keyword z-operator">=</span><span>(D_i</span><span class="z-keyword z-operator">-</span><span class="z-constant z-numeric">2</span><span class="z-keyword z-control">\sqrt</span><span> Nt</span><span class="z-keyword z-operator">^</span><span>{</span><span class="z-keyword z-operator">-</span><span class="z-constant z-numeric">2</span><span>}</span><span>)</span><span class="z-keyword z-control">\bmod</span><span> p</span></span>
+<span class="giallo-l"><span>$</span><span>$</span></span></code></pre>
+<p><code>$s_i\bmod p$</code> 容易由上述递推算出。如果预先算出 <code>$\sqrt N\bmod p, t^{-2}\bmod p,2\sqrt Nt^{-2}\bmod p$</code>，就可以很快算出 <code>$D_i,E_i$</code>。这就节省了切换多项式的时间。</p>
+<p>还剩下最后一个细节：如果 <code>$p\mid t$</code>，那么以上同余式的推导不成立。事实上，当 <code>$p\mid t$</code> 时，当且仅当 <code>$x\equiv -\frac{(s_i^2-N)/t^2}{2s_i}\pmod p$</code> 时有 <code>$p\mid f_i(x)$</code>，即某个 <code>$x$</code> 使得 <code>$p\mid f_i(x)$</code> 的概率减半为 <code>$1/p$</code>。这提示我们，<code>$t$</code> 的因数尽量不要选取 smooth check 所使用的小素数，以增大 <code>$f_i(x)$</code> smooth 的概率。实现中，我们可以选择素数 <code>$q\in[B,2B]$</code> 来生成 <code>$t$</code>，这样大约有 <code>$n\approx\log_B N\approx2\sqrt\frac{\log N}{\log\log N}$</code>。</p>
+<p><del>我并没有写这个的代码</del></p>
+<hr />
+<p>References:</p>
+<ul>
+<li>
+<p><a rel="external" href="https://zhuanlan.zhihu.com/p/106650020">zzq's blog</a></p>
+</li>
+<li>
+<p><a rel="external" href="https://en.wikipedia.org/wiki/Quadratic_sieve">Quadratic Sieve - Wikipedia</a></p>
+</li>
+<li>
+<p>Prime Numbers: A Computational Perspective (Crandall, Pomerance)（zzq 那篇的 reference）</p>
+</li>
+<li>
+<p>A Quadratic Sieve on the n-Dimensional Cube (Peralta)</p>
+</li>
+</ul>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-1">
+<p>Factoring with Two Large Primes (Lenstra, Manasse) <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="fn-2">
+<p>A Block Lanczos Algorithm for Finding Dependencies over GF(2) (Montgomery) <a href="#fr-2-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+  </main>
+  <section class="article-action-block">
+    <!-- AddToAny BEGIN -->
+    <div class="addtoany-block">
+      <a
+        href="https://www.addtoany.com/share#url=https:&#x2F;&#x2F;resorie.github.io&#x2F;blog&#x2F;posts&#x2F;mpqs&#x2F;&amp;title=冒泡潜水"
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        ><img class="button" src="https://static.addtoany.com/buttons/a2a.svg"
+      /></a>
+      <a
+        href="https://www.addtoany.com/add_to/mastodon?linkurl=https:&#x2F;&#x2F;resorie.github.io&#x2F;blog&#x2F;posts&#x2F;mpqs&#x2F;&amp;linkname=冒泡潜水"
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        ><img
+          class="button"
+          src="https://static.addtoany.com/buttons/mastodon.svg"
+      /></a>
+      <a
+        href="https://www.addtoany.com/add_to/telegram?linkurl=https:&#x2F;&#x2F;resorie.github.io&#x2F;blog&#x2F;posts&#x2F;mpqs&#x2F;&amp;linkname=冒泡潜水"
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        ><img
+          class="button"
+          src="https://static.addtoany.com/buttons/telegram.svg"
+      /></a>
+      <a
+        href="https://www.addtoany.com/add_to/twitter?linkurl=https:&#x2F;&#x2F;resorie.github.io&#x2F;blog&#x2F;posts&#x2F;mpqs&#x2F;&amp;linkname=冒泡潜水"
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        ><img
+          class="button"
+          src="https://static.addtoany.com/buttons/twitter.svg"
+      /></a>
+      <a
+        href="https://www.addtoany.com/add_to/facebook?linkurl=https:&#x2F;&#x2F;resorie.github.io&#x2F;blog&#x2F;posts&#x2F;mpqs&#x2F;&amp;linkname=冒泡潜水"
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        ><img
+          class="button"
+          src="https://static.addtoany.com/buttons/facebook.svg"
+      /></a>
+      <a
+        href="https://www.addtoany.com/add_to/line?linkurl=https:&#x2F;&#x2F;resorie.github.io&#x2F;blog&#x2F;posts&#x2F;mpqs&#x2F;&amp;linkname=冒泡潜水"
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        ><img class="button" src="https://static.addtoany.com/buttons/line.svg"
+      /></a>
+    </div>
+    <!-- AddToAny END -->
+    
+  </section>
+  <br />
+</article>
+
+      </div>
+    </div>
+    <div class="page-footer">
+      <div class="footer-content">
+        <span>With theme <a href="https://github.com/Resorie/zola-theme-nivis">Nivis</a><span class="separator">/</span>Powered by <a href="https://www.getzola.org/" target="_blank">Zola</a></span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      var sidebar = document.getElementById("sidebar");
+      var mask = document.getElementById("sidebar-mask");
+      sidebar.classList.toggle("open");
+      mask.classList.toggle("open");
+    }
+
+    const getPreferredScheme = () => window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+    function updateThemeIcon(scheme) {
+      const themeIcon = document.getElementById("theme-icon");
+      if (themeIcon) {
+        if (scheme === 'dark') {
+          themeIcon.classList.remove("fa-moon");
+          themeIcon.classList.add("fa-sun");
+        } else {
+          themeIcon.classList.remove("fa-sun");
+          themeIcon.classList.add("fa-moon");
+        }
+      }
+    }
+
+    function toggleTheme() {
+      const root = document.documentElement;
+      const systemScheme = getPreferredScheme();
+      const currentInlineScheme = root.style.colorScheme;
+      
+      // Calculate effective scheme
+      const effectiveScheme = currentInlineScheme || systemScheme;
+      const targetScheme = effectiveScheme === 'dark' ? 'light' : 'dark';
+
+      root.style.colorScheme = targetScheme;
+      localStorage.setItem("theme", targetScheme);
+      updateThemeIcon(targetScheme);
+    }
+
+    // Initialize theme
+    (function() {
+      const savedTheme = localStorage.getItem("theme");
+      const systemTheme = getPreferredScheme();
+      
+      if (savedTheme) {
+        document.documentElement.style.colorScheme = savedTheme;
+        updateThemeIcon(savedTheme);
+      } else {
+        updateThemeIcon(systemTheme);
+      }
+
+      // Listen for system changes
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem("theme")) {
+          const newScheme = e.matches ? 'dark' : 'light';
+          updateThemeIcon(newScheme);
+        }
+      });
+    })();
+
+    // Footnote Navigation & Code Block Label
+    document.addEventListener("DOMContentLoaded", function() {
+        const MATH_LANGS = ['math', 'math-display', 'tex', 'latex'];
+
+        // Code Block Language Label
+        document.querySelectorAll('pre code').forEach(code => {
+            const pre = code.parentElement;
+            let lang = pre.getAttribute('data-lang');
+
+            // 1. Try to recover lang if not on pre
+            if (!lang) {
+                const codeLang = code.getAttribute('data-lang');
+                if (codeLang) {
+                    lang = codeLang;
+                } else {
+                    const classes = code.className.split(' ');
+                    for (const cls of classes) {
+                        if (cls.startsWith('language-')) {
+                            lang = cls.replace('language-', '');
+                            break;
+                        }
+                    }
+                }
+                if (lang) pre.setAttribute('data-lang', lang);
+            }
+
+            // 2. Process Math Blocks
+            if (lang && MATH_LANGS.includes(lang.toLowerCase())) {
+                const div = document.createElement('div');
+                div.classList.add('math-display');
+                let mathContent = code.textContent.trim();
+                
+                // Auto-wrap if typical delimiters are missing
+                if (!mathContent.startsWith('$$') && !mathContent.startsWith('\\[')) {
+                    mathContent = '$$' + mathContent + '$$';
+                }
+                
+                div.textContent = mathContent;
+                pre.replaceWith(div);
+            }
+        });
+
+        // 3. Process Inline Math
+        // Zola (or Markdown) often renders `$E=mc^2$` as <code>$E=mc^2$</code>.
+        // We need to unwrap this code tag so MathJax can process it without code styling.
+        document.querySelectorAll(':not(pre) > code').forEach(code => {
+            const text = code.textContent.trim();
+            // Check for $...$ (and not $$...$$) or \(...\)
+            if ( (text.startsWith('$') && text.endsWith('$') && !text.startsWith('$$')) ||
+                 (text.startsWith('\\(') && text.endsWith('\\)')) ) {
+                 const span = document.createElement('span');
+                 span.textContent = text;
+                 code.replaceWith(span);
+            }
+        });
+    });
+  </script>
+
+  <script src="//instant.page/5.1.0" type="module" integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+</body>
+
+</html>
