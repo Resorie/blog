@@ -11,7 +11,7 @@ tags = ["数学", "数论"]
 
 ## PE169 Sums of Powers of Two
 
-date: 12.17 diff: 50
+date: 12.17 ~~diff: 50~~ level: 16
 
 > [!NOTE]
 > 题意：定义 `$f(n)$` 为 `$n$` 表示为若干个 `$2$` 的幂之和的形式，且每个幂出现次数最多两次的方案数。
@@ -62,7 +62,7 @@ print(solve2(N))
 
 ## PE216 The Primality of `$2n^2-1$`
 
-date: 12.18 diff: 45
+date: 12.18 ~~diff: 45~~ level: 13
 
 
 > [!NOTE]
@@ -70,7 +70,7 @@ date: 12.18 diff: 45
 >
 > 已知 `$N=10000$` 时有 `$2202$` 个。求 `$N=5\times10^7$` 时有多少。
 
-这种傻逼题怎么能有 45 difficulty 的啊？为什么评论区还有一堆 Miller-Rabin 硬草过去的啊？
+~~这种傻逼题怎么能有 45 difficulty 的啊？~~ 为什么评论区还有一堆 Miller-Rabin 硬草过去的啊？
 
 直接筛 `$t(n)$` 这个多项式即可。`$p\mid t(n)\iff n\equiv \pm1/2\pmod p$`。
 
@@ -182,7 +182,7 @@ int main() {
 
 ## PE433 Steps in Euclid's Algorithm
 
-date: 26.1.13 diff: 65
+date: 26.1.13 ~~diff: 65~~ level: 30
 
 > [!NOTE]
 > 题意：考察欧几里得算法求 `$\gcd(x,y)$` 的流程：
@@ -310,7 +310,7 @@ $$
 
 ```math-display
 $$
-g(n)=\sum_{1\le y<n}E(n,y)=\lfloor 3(n-1)/2\rfloor + \tilde 2r(n)
+g(n)=\sum_{1\le y<n}E(n,y)=\lfloor 3(n-1)/2\rfloor + 2\tilde r(n)
 $$
 ```
 
@@ -460,7 +460,7 @@ int main() {
 
 ## PE443 GCD Sequence
 
-date: 26.1.16 diff: 30
+date: 26.1.16 ~~diff: 30~~ level: 10
 
 > [!NOTE]
 > 题意：`$g(4)=13$`, `$g(n)=g(n-1)+\gcd(g(n-1), n)\quad(n\ge 5)$`。
@@ -475,7 +475,7 @@ date: 26.1.16 diff: 30
 
 ## PE266 Pseudo Square Root
 
-date: 1.20 diff: 65
+date: 1.20 ~~diff: 65~~ level: 29
 
 > [!NOTE]
 > 令 `$p$` 为所有不超过 `$190$` 的素数之积。求 `$p$` 不超过其平方根的最大因子。
