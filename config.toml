@@ -36,3 +36,10 @@ social_links = [
     { name = "email", url = "mailto:resorie@qq.com" },
     { name = "bilibili", url = "https://space.bilibili.com/399133773" },
 ]
+
+[extra.sections]
+posts = true
+links = true
+archive = true
+about = true
+tags = true
