@@ -43,29 +43,35 @@ tags = ["数论", "密码学", "质因数分解", "算法"]
 
 Smooth number 的密度由 Dickman 函数给出：
 
-```math-display
-$$
+
+
+<div class="math-display">$$
 \psi(x,y):=\left|\left\{i\le x\mid i \text{ is } y\text{-smooth}\right\}\right|
-$$
-```
+$$</div>
+
+
 
 当 `$x\to\infty$` 时，有：
 
-```math-display
-$$
+
+
+<div class="math-display">$$
 \psi(x,y)\sim x \rho(u)\quad\text{where }x=y^u
-$$
-```
+$$</div>
+
+
 
 其中 `$\rho(u)$` 是 Dickman-de Brujin 函数。这表明，当 `$x$` 足够大时，smooth number 的密度不依赖于具体的 `$x,y$`，而只和 `$u=\frac{\ln x}{\ln y}$` 有关。
 
 Dickman 证明了如下估计：
 
-```math-display
-$$
+
+
+<div class="math-display">$$
 \rho(u)\approx u^{-u+o(u)}
-$$
-```
+$$</div>
+
+
 
 证明涉及微分学，这里不作详细展开。
 
@@ -81,24 +87,28 @@ $$
 
 当然，我们运气应当不致于这么好，不仅 `$\gamma_i$` 是 smooth 的，而且 `$e_{i,j}$` 都是偶数。前者我们只能寄希望于概率，但是后者我们可以想想办法。考虑选取多个 `$\alpha_i$` 并计算 `$\gamma_i$`，再令向量 `$\boldsymbol v_i=(e_{i,1}\bmod 2,e_{i,2}\bmod 2,\dots,e_{i,k}\bmod 2)\in \mathbb Z_2^n$`。如果我们能找到一些线性相关的 `$\boldsymbol v_i$`，即存在指标集 `$I$` 使得 `$\sum_{i\in I}\boldsymbol v_i=\boldsymbol 0$`，那么可以取
 
-```math-display
-$$
+
+
+<div class="math-display">$$
 \begin{aligned}
-\alpha:=&\prod_{i\in I}\alpha_i\\\
-\gamma:=& \prod_{i\in I}\gamma_i=\prod p_j^{\sum_{i\in I} e_{i,j}}\\
-\beta:=&\prod p_j^{\left(\sum_{i\in I}e_{i,j}\right)/2}
+\alpha:=&amp;\prod_{i\in I}\alpha_i\\\
+\gamma:=&amp; \prod_{i\in I}\gamma_i=\prod p_j^{\sum_{i\in I} e_{i,j}}\\
+\beta:=&amp;\prod p_j^{\left(\sum_{i\in I}e_{i,j}\right)/2}
 \end{aligned}
-$$
-```
+$$</div>
+
+
 
 
 一般的实现中，可以令 `$\beta_i:=\prod p_j^{\left\lfloor e_{i,j} / 2\right\rfloor}$`，那么就有：
 
-```math-display
-$$
+
+
+<div class="math-display">$$
 \beta=\prod_{i\in I} \beta_i\cdot\prod p_j^{\left(\sum_{i\in I}e_{i,j}\bmod 2\right) / 2}
-$$
-```
+$$</div>
+
+
 
 假设选取的 smooth 阈值为 `$B$`，那么我们就是有若干个 `$\pi(B)$` 维的向量。只要我们找到 `$\pi(B)+k$` 个向量，我们就能通过高斯消元找出 `$k$` 组 `$\alpha,\beta$`，每组至少有 `$\frac 12$` 概率成功分解，那么总的分解成功概率就是 `$1-2^{-k}$`。
 
@@ -110,20 +120,24 @@ $$
 
 `$\gamma_i=\alpha_i^2\bmod N$` 是模 `$N$` 的二次剩余，它大约在 `$1\sim N$` 中均匀分布，因此我们可以用前面的 smooth number 密度公式估算它 smooth 的概率，即 `$u^{-u}$`。我们需要找到 `$O(k)=O\left(\frac{B}{\ln B}\right)$` 个向量。每次尝试需要 `$k$` 次试除。最后，我们需要进行高斯消元。故可得到：
 
-```math-display
-$$
+
+
+<div class="math-display">$$
 T\approx k^2u^u+k^3
-$$
-```
+$$</div>
+
+
 
 这种式子谁爱算谁算，我扔给 AI 了。算出来 `$T$` 最小时有：
 
-```math-display
-$$
+
+
+<div class="math-display">$$
 B\approx \exp(\frac 1{\sqrt2}\sqrt{\ln N\cdot\ln\ln N}) \\
 T\approx\exp(\frac 3{\sqrt2}\sqrt{\ln N\cdot\ln\ln N})
-$$
-```
+$$</div>
+
+
 
 
 #### The L-notation
@@ -132,11 +146,13 @@ $$
 
 一般地，我们定义 **L-notation**：
 
-```math-display
-$$
-L_n[\alpha, c]:=\exp\left(\left(c+o(1)\right)\left(\ln n\right)^\alpha\left(\ln \ln n\right)^{1-\alpha}\right)\quad \text{where }c>0, 0\le\alpha\le1
-$$
-```
+
+
+<div class="math-display">$$
+L_n[\alpha, c]:=\exp\left(\left(c+o(1)\right)\left(\ln n\right)^\alpha\left(\ln \ln n\right)^{1-\alpha}\right)\quad \text{where }c&gt;0, 0\le\alpha\le1
+$$</div>
+
+
 
 该函数的增长量级主要由 `$\alpha$` 控制：
 
@@ -146,12 +162,14 @@ $$
 
 于是我们可以重新表示上面结果中的 `$B,T$`：
 
-```math-display
-$$
+
+
+<div class="math-display">$$
 B=L_N\left[\frac 12,\frac1{\sqrt 2}\right]\\
 T=L_N\left[\frac 12,\frac3{\sqrt2}\right]
-$$
-```
+$$</div>
+
+
 
 读者可以自行尝试证明该算法复杂度的另一种方法：设 `$B=L_N[1/2,c]$` 并带入以上复杂度式子，解出 `$c$`。
 
@@ -193,20 +211,24 @@ $$
 
 同 Dixon，我们需要筛出 `$O(k)$` 个数，每个数成功概率为 `$u^{-u}$`，筛每个数的成本为 `$\sum_{p\le B}p^{-1}=O(\log\log B)$`。高斯消元复杂度 `$O(k^2\log N)$`。故有：
 
-```math-display
-$$
+
+
+<div class="math-display">$$
 T\approx ku^u\log\log B+k^2\log N
-$$
-```
+$$</div>
+
+
 
 当 `$T$` 最小时，有：
 
-```math-display
-$$
+
+
+<div class="math-display">$$
 B\approx \exp(\frac 12\sqrt{\log N\log\log N})=L_N\left[\frac 12,\frac12\right]\\
 T\approx\exp(\sqrt{\log N\log \log N})= L_N\left[\frac 12,1\right]
-$$
-```
+$$</div>
+
+
 
 
 ### MPQS
@@ -237,45 +259,53 @@ Peralta 提出，MPQS 中切换多项式还要重算一遍 `$b,c$` 之类的，�
 
 然后考虑如何遍历所有的 `$b$`。令数列 `$s_1,\dots,s_{2^n}$` 遍历所有的 `$b$` 解。我们希望遍历过程中每次只更改一个 `$\delta_i$`，那么可以有递推关系：
 
-```math-display
-$$
+
+
+<div class="math-display">$$
 s_{i+1}=s_i+2\mu_i\gamma_{k_i}-\omega_it^2
-$$
-```
+$$</div>
+
+
 
 其中 `$\mu_i=\pm 1$`，代表 `$\delta_{k_i}$` 的改变。Peralta 的叙述中把这个递推关系理解为 `$n$` 维 Hypercube 上的一个 Hamilton 路径，`$\mu_i$` 代表第 `$k_i$` 维坐标的改变；当然其实还有其他理解方法，比如相信大家都知道格雷码，原理是类似的。`$\omega_i$` 可以理解为对 `$t^2$` 取模的一个修正系数，使得 `$s_{i+1}\in(0,t^2)$`。由之前对 `$\alpha_i$` 的选择，有 `$\omega_i\in\{\pm 1,0\}$`。一般的实现中可以直接取 `$\omega_i\equiv 0$`，此时仍有 `$s_i\in(-nt^2,nt^2)$`。
 
 当然我们并不关心具体值。在筛法中，`$s_i$` 作为多项式的系数，我们关心其模 `$p$` 意义下的值。Peralta 提出，为了方便计算 `$s_i\bmod p$`，我们可以打表一下其差分。令：
 
-```math-display
-$$
+
+
+<div class="math-display">$$
 \Delta_i:=s_{i+1}-s_i=2\mu_i\gamma_{k_i}-\omega_it^2
-$$
-```
+$$</div>
+
+
 
 注意到 `$\mu_i$` 有两种取值，`$\omega_i$` 有三种取值，`$\gamma_i$` 有 `$n$` 种取值，那么 `$\Delta_i$` 至多有 `$6n$` 种取值（如果固定 `$\omega_i=0$` 则只有 `$2n$` 种）。这个可以打表算出来。那么转移就只需极小的代价。
 
 现在可以构造我们需要的多项式了。对 MPQS 中的多项式略作变换，除掉 `$a$` 这个平方因子，就得到我们构造的多项式：
 
-```math-display
-$$
+
+
+<div class="math-display">$$
 \begin{aligned}
-f_i(x):=&\ (s_i/t+x t)^2\bmod N\\
-=&\ \frac{s_i^2-N}{t^2}+2s_ix+x^2t^2
+f_i(x):=&amp;\ (s_i/t+x t)^2\bmod N\\
+=&amp;\ \frac{s_i^2-N}{t^2}+2s_ix+x^2t^2
 \end{aligned}
-$$
-```
+$$</div>
+
+
 
 我们仍须验证这样生成的 `$f_i(x)$` 不太大，以保证其 smooth 的概率。假设我们要筛的区间是 `$x\in[-M,M]$`，我们取 `$t\le\frac{N^{1/4}}{\sqrt M}$`。由于 `$s_i^2<t^4<N$`，通过简单放缩可以得到 `$\frac{s_i^2-N}{t^2}<0$` 且 `$\left|\frac{s_i^2-N}{t^2}\right|\le M\sqrt N$`。二次项 `$x^2t^2\le M^2\left(\frac{N^{1/4}}{\sqrt M}\right)^2=M\sqrt N$`。一次项 `$2s_ix\le 2M\sqrt N$`。因此我们大概有 `$f_i(x)=O(M\sqrt N)$`，这说明其值不太大，也就保证其大概比较 smooth。
 
 在筛法中，令 `$p\mid f_i(x)$`，容易得到 `$x\equiv(-s_i\pm\sqrt N)t^{-2}\pmod p$`。这就得到筛 `$f_i(x)$` 的两个起点：
 
-```math-display
-$$
+
+
+<div class="math-display">$$
 D_i=(-s_i+\sqrt N)t^{-2}\bmod p\\
 E_i=(-s_i-\sqrt N)t^{-2}\bmod p=(D_i-2\sqrt Nt^{-2})\bmod p
-$$
-```
+$$</div>
+
+
 
 `$s_i\bmod p$` 容易由上述递推算出。如果预先算出 `$\sqrt N\bmod p, t^{-2}\bmod p,2\sqrt Nt^{-2}\bmod p$`，就可以很快算出 `$D_i,E_i$`。这就节省了切换多项式的时间。
 

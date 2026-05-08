@@ -15,37 +15,45 @@ tags = ["数论", "离散对数", "算法"]
 
 设 `$x$` 的 `$p$` 进制表示为 `$x=x_0+x_1p+\dots+x_{\alpha-1}p^{\alpha - 1}$`。我们希望从低位向高位递推，因而我们希望有一个操作能够抹去 `$x$` 在 `$p$` 进制下的较高位。考虑在这个对数方程左右同乘上一个 `$p_j$`，那么有：
 
-```math-display
-$$
-p^j\operatorname{ind}_ga\equiv \sum_{i<\alpha}x_ip^{i+j}\pmod {p^\alpha}
-$$
-```
+
+
+<div class="math-display">$$
+p^j\operatorname{ind}_ga\equiv \sum_{i&lt;\alpha}x_ip^{i+j}\pmod {p^\alpha}
+$$</div>
+
+
 
 那么等式右边 `$i+j\ge\alpha$` 的项就全部被抹去，得到一个关于 `$x_0,x_1,\dots,x_{\alpha-j-1}$` 的等式。
 
 当然，用这个对数的式子，我们是没法实际去算出 `$x_i$` 的。我们要把这个变换模数后的对数式还原成幂次的形式。假设指数 `$x=kp^{\alpha}+x'$`，带入原方程：
 
-```math-display
-$$
+
+
+<div class="math-display">$$
 g^{kp^\alpha+x'}\equiv a\pmod P
-$$
-```
+$$</div>
+
+
 
 我们希望消灭 `$kp^\alpha$`。由 Fermat 小定理，有 `$g^{P-1}\equiv 1\pmod P$`，且我们有 `$p^\alpha\mid(P-1)$`，故可以左右同取 `$\frac{P-1}{p^\alpha}$` 次幂：
 
-```math-display
-$$
+
+
+<div class="math-display">$$
 (g^{kp^\alpha+x'})^{\frac{P-1}{p^\alpha}}=g^{k(P-1)}\cdot g^{\frac{(P-1)x'}{p^\alpha}}\equiv (g^{\frac{P-1}{p^\alpha}})^{x'}\equiv a^{\frac{P-1}{p^\alpha}}\pmod P
-$$
-```
+$$</div>
+
+
 
 以下设 `$G=g^{\frac{P-1}{p^\alpha}},A=a^{\frac{P-1}{p^\alpha}}$`。我们在该指数模 `$p^\alpha$` 的 case 中，需求解的即 `$G^x\equiv A\pmod P$`。现在我们可以将之前抹去高次系数的对数式子，化为可以计算的形式：
 
-```math-display
-$$
-A^{p^j}\equiv G^{\sum_{i+j<\alpha}x_ip^{i+j}}\equiv \prod_{i+j<\alpha}G^{x_ip^{i+j}}\pmod P
-$$
-```
+
+
+<div class="math-display">$$
+A^{p^j}\equiv G^{\sum_{i+j&lt;\alpha}x_ip^{i+j}}\equiv \prod_{i+j&lt;\alpha}G^{x_ip^{i+j}}\pmod P
+$$</div>
+
+
 
 在递推过程中，我们已知 `$x_0,\dots,x_{\alpha-j-2}$`，故可以暴力枚举后验证或用 BSGS 算出 `$x_{\alpha-j-1}$`。解决模 `$p^\alpha$` 的单个 case 的复杂度为 `$O(p\alpha)$`（若用 BSGS 则为 `$O(\sqrt p\alpha)$`，实现中一般会对大的 `$p$` 使用）。总复杂度为 `$O(\sum (\sqrt{p_i}\alpha_i+\log P))\approx O((\sqrt{\max p}+\omega(P-1))\log P)$`。
 
