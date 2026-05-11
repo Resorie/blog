@@ -17,26 +17,18 @@ tags = ["数论", "算法"]
 
 为了快速计算 `$r(x)$`，考察一个很邪恶的函数。令 `$r^{-1}$` 为模 `$p$` 意义下 `$r$` 的逆元，定义 `$redc(x)=xr^{-1}\bmod p$`。redc 是 reduce 的缩写，~~Montgomery 的论文里这么写的~~。先计算 `$redc(x)$`。把取模用不定方程替代掉：
 
-
-
 <div class="math-display">$$
 r\cdot redc(x) + kp=x
 \\
 redc(x)=\frac{x-kp}{r}
 $$</div>
 
-
-
 然后考察 `$k$`。由 `$r$` 的性质，自然想到对 `$r$` 取模：
-
-
 
 <div class="math-display">$$
 kp\equiv x\pmod r
 \\ k=xp^{-1} \bmod r
 $$</div>
-
-
 
 由于模数固定，`$p^{-1}$` 可以预处理。这样算 `$redc(x)$` 就可以用两次乘法和一些移位搞定了，很快。注意稍微处理一下，保证 `$redc(x)\in[0,p)$`。于是 `$r(x)$` 也很好算：`$r(x)=redc(xr^2)$`。可以预处理一下 `$r^2\bmod p$`。
 

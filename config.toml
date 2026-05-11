@@ -22,7 +22,6 @@ bottom_footnotes = true
 style = "class"
 light_theme = "one-light"
 dark_theme = "one-dark-pro"
-extra_grammars = [ "themes/nivis/syntaxes/math-display.json" ]
 
 [extra]
 main_section = "posts"
@@ -36,10 +35,3 @@ social_links = [
     { name = "email", url = "mailto:resorie@qq.com" },
     { name = "bilibili", url = "https://space.bilibili.com/399133773" },
 ]
-
-[extra.sections]
-posts = true
-links = true
-archive = true
-about = true
-tags = true

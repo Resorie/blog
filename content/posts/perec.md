@@ -22,13 +22,9 @@ AI 用递推秒了。这里叙述一种我自己的神秘做法。
 
 考虑将 `$n$` 的二进制表示从高次幂向低次幂“展开”。具体地说，将 `$2^n$` 展开至 `$k$` 次表示：
 
-
-
 <div class="math-display">$$
 2^n=2^{n-1}+\dots+2\cdot2^k
 $$</div>
-
-
 
 发现这里的 `$k$` 除了不能是原表示中已有的幂以外没有什么限制。于是我们可以安全地令这样的展开穿过某些中间的幂次 `$2^m(k<m<n)$`。注意展开到 `$k$` 次之后所有高于 `$k$` 次的幂都不能再展开了，于是可以递归求解。
 
@@ -200,33 +196,21 @@ date: 26.1.13 ~~diff: 65~~ level: 30
 
 首先显然根据对称性：
 
-
-
 <div class="math-display">$$
 S(N)=\frac{N(N+1)}2+2\sum_{1\le y&lt;x\le N}E(x,y)
 $$</div>
 
-
-
 论文中有结论，对 `$n>2$`：
-
-
 
 <div class="math-display">$$
 f(n)=\sum_{1\le y&lt;n}[n\perp y]E(n,y)=\frac32\varphi(n)+2r(n)
 $$</div>
 
-
-
 其中：
-
-
 
 <div class="math-display">$$
 r(n)=\sum_{x&lt;y,x'&lt;y'}[x\perp y][x'\perp y'][xx'+yy'=n]
 $$</div>
-
-
 
 {% collapse(summary="对该结论的证明（upd 1.17）", unfold=true) %}
 
@@ -243,76 +227,49 @@ $$</div>
 - `$n\ge 2$` 时，有如下递归定义：
   
 
-
 <div class="math-display">$$
   K(a_1,\dots,a_n)=a_n K(a_1,\dots,a_{n-1})+K(a_1,\dots,a_{n-2})
   $$</div>
-
-
 
 以下对某个给定的数列 `$\{a_n\}$`，记 `$Q(l,r)=K(a_l,\dots,a_r)$`。
 
 Continuant 的重要用处是，其可以表示连分数。具体而言有：
 
-
-
 <div class="math-display">$$
 [a_1,\dots,a_n]=\frac{Q(1, n)}{Q(2,n)}
 $$</div>
 
-
-
 Euler 的研究指出，如果从中间拆开 continuant，会有如下性质：
-
-
 
 <div class="math-display">$$
 Q(1,n)=Q(1,i)\cdot Q(i+1,n)+Q(1,i-1)\cdot Q(i+2,n)
 $$</div>
 
-
-
 从 continuant 的形式不难发现 `$K(a_l,a_{l+1},\dots,a_r)=K(a_r,a_{r-1},\dots,a_l)$`。于是设：
-
-
 
 <div class="math-display">$$
 [a_i,a_{i-1},\dots,a_1]=\frac xy,\quad [a_{i+1},a_{i+2},\dots,a_n]=\frac{x'}{y'}
 $$</div>
 
-
-
 那么有：
-
-
 
 <div class="math-display">$$
 x=Q(1,i)\quad y=Q(1,i-1)\quad x'=Q(i+1,n)\quad y'=Q(i+2,n)
 $$</div>
 
-
-
 如果此时设数列 `$\{a_n\}$` 满足 `$\frac ab=[a_1,a_2,\dots,a_n]$`，那么就有：
-
-
 
 <div class="math-display">$$
 a=xx'+yy'
 $$</div>
 
-
-
 根据连分数性质，显然会有 `$x\perp y,x'\perp y',x'<y'$`。同时，只需要 `$[a_i,\dots,a_1]>1$` 就会有 `$x<y$`，这仅当 `$a_1=i=1$` 时可能发生。
 
 现在我们可以开始计数。固定 `$a$`，枚举 `$b$`，来对 `$a=Q(1,k(a,b))$` 的拆分计数：`$i\in[2,k-1]$` 显然合法，再判断 `$i=1$` 时是否有 `$a_i=1$` 即可。即总切分数为：
 
-
-
 <div class="math-display">$$
 C=\sum_{b\perp a}k(a,b)-1-[a_i=1]=\sum_{b\perp a}E(a,b)-\varphi(a)-\sum_{b}[a_i=1]
 $$</div>
-
-
 
 显然有 `$a_i=1$` 当且仅当 `$\lfloor a/b\rfloor =1$`，这样的 `$b$` 共 `$\frac{\varphi(a)}2$` 个。即 `$C=f(a)-\frac32\varphi(a)$`。
 
@@ -320,39 +277,25 @@ $$</div>
 
 综上，我们得到
 
-
-
 <div class="math-display">$$
 f(a)=\frac32\varphi(a)+2r(a)
 $$</div>
-
-
 
 {% end %}
 
 化简一下 `$f$`，去掉互质的要求：
 
-
-
 <div class="math-display">$$
 g(n)=\sum_{1\le y&lt;n}E(n,y)=\lfloor 3(n-1)/2\rfloor + 2\tilde r(n)
 $$</div>
 
-
-
 其中：
-
-
 
 <div class="math-display">$$
 \tilde r(n)=\sum_{x&lt;y,x'&lt;y'}[x\perp y][xx'+yy'=n]
 $$</div>
 
-
-
 回到和式，就变成简单莫反了。
-
-
 
 <div class="math-display">$$
 \begin{aligned}
@@ -363,11 +306,7 @@ $$</div>
 \end{aligned}
 $$</div>
 
-
-
 还需要计算 `$\sum_{x<y,x'<y'}[xx'+yy'\le n]$`。枚举 `$P=xx'\le(n-1)/2=L$`，将 `$y>x,y'>x'$` 的限制利用容斥拆开：
-
-
 
 <div class="math-display">$$
 \begin{aligned}
@@ -378,11 +317,7 @@ $$</div>
 \end{aligned}
 $$</div>
 
-
-
 其中 `$d(n)=\sum_{d\mid n}1,D(n)=\sum_{i=1}^nd(i)$`。前面两项容易计算。最后一项拎出来计算：
-
-
 
 <div class="math-display">$$
 \begin{aligned}
@@ -393,19 +328,13 @@ $$</div>
 \end{aligned}
 $$</div>
 
-
-
 最内层的一个和式可以类欧 `$O(\log n)$` 计算。枚举外面的两层进行求和，复杂度总共为 `$O(n\log^2 n)$`。
 
 复杂度（设 `$f(n)=O(n\log^2 n)$`）：
 
-
-
 <div class="math-display">$$
 T(N)\approx O\left(\sum_{n\le \sqrt N}f(n)+f(N/n)\right)=O(N\log^3 N)
 $$</div>
-
-
 
 {% collapse(summary="code") %}
 
