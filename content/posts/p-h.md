@@ -25,7 +25,7 @@ $$</div>
 
 如果令 `$G=g^{\frac{P-1}m},A=a^{\frac{P-1}m}$`，那么我们就得到 `$G^{x_0}\equiv A\pmod P$` 的形式。
 
-这个过程在模意义下也很直观，因为我们可以将整个同余式乘上 `$\frac{P-1}{m}$`：
+这个过程在对数意义下也很直观，因为我们可以将整个同余式乘上 `$\frac{P-1}{m}$`：
 
 <div class="math-display">$$
 \frac{(P-1)x_0}{m}\equiv \frac{P-1}m\operatorname{ind}_ga\equiv \operatorname{ind}_g a^{\frac{P-1}m}\pmod{(P-1)}
