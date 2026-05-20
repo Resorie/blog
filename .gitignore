@@ -9,3 +9,5 @@ push-all.sh
 .venv
 
 .claude
+
+.playwright-mcp
