@@ -18,6 +18,12 @@ render_emoji = true
 github_alerts = true
 bottom_footnotes = true
 
+[markdown.highlighting]
+style = "class"
+light_theme = "one-light"
+dark_theme = "one-dark-pro"
+extra_grammars = [ "themes/nivis/syntaxes/math-display.json" ]
+
 [extra]
 main_section = "posts"
 avatar = "images/avatar.jpeg"
