@@ -30,7 +30,7 @@ $$
 
 复杂度 $O&#40;&#92;log n&#41;$。
 
-{% collapse(summary="code") %}
+{% <collapse summary="code"> %}
 
 ```python
 from functools import lru_cache
@@ -56,7 +56,7 @@ def solve2(N):
 
 print(solve2(N))
 ```
-{% end %}
+{% </collapse> %}
 
 ## PE216 The Primality of $2n&#94;2&#45;1$
 
@@ -74,7 +74,7 @@ date: 12.18 ~~diff: 45~~ level: 13
 
 复杂度是常数比较小的 $O&#40;N&#92;log&#92;log N&#41;$。分块筛可以做到更小的时空复杂度。
 
-{% collapse(summary="code") %}
+{% <collapse summary="code"> %}
 没怎么优化，空间复杂度很大
 
 ```cpp
@@ -176,7 +176,7 @@ int main() {
     return 0;
 }
 ```
-{% end %}
+{% </collapse> %}
 
 ## PE433 Steps in Euclid's Algorithm
 
@@ -212,7 +212,7 @@ $$
 r&#40;n&#41;&#61;&#92;sum&#95;&#123;x&#60;y&#44;x&#39;&#60;y&#39;&#125;&#91;x&#92;perp y&#93;&#91;x&#39;&#92;perp y&#39;&#93;&#91;xx&#39;&#43;yy&#39;&#61;n&#93;
 $$
 
-{% collapse(summary="对该结论的证明（upd 1.17）", unfold=true) %}
+{% <collapse summary="对该结论的证明（upd 1.17）" unfold={true}> %}
 
 我们知道欧几里得算法等价于用连分数表示 $&#92;frac ab&#61;&#91;a&#95;1&#44;a&#95;2&#44;&#92;dots&#44;a&#95;k&#93;$。考虑将 $E&#40;a&#44;b&#41;$ 转换为这样的 $k&#40;a&#44;b&#41;$。
 
@@ -281,7 +281,7 @@ $$
 f&#40;a&#41;&#61;&#92;frac32&#92;varphi&#40;a&#41;&#43;2r&#40;a&#41;
 $$
 
-{% end %}
+{% </collapse> %}
 
 化简一下 $f$，去掉互质的要求：
 
@@ -336,7 +336,7 @@ $$
 T&#40;N&#41;&#92;approx O&#92;left&#40;&#92;sum&#95;&#123;n&#92;le &#92;sqrt N&#125;f&#40;n&#41;&#43;f&#40;N&#47;n&#41;&#92;right&#41;&#61;O&#40;N&#92;log&#94;3 N&#41;
 $$
 
-{% collapse(summary="code") %}
+{% <collapse summary="code"> %}
 
 ```cpp
 #include <iostream>
@@ -421,7 +421,7 @@ int main() {
     return 0;
 }
 ```
-{% end %}
+{% </collapse> %}
 
 ## PE443 GCD Sequence
 
