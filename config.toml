@@ -28,6 +28,9 @@ extra_grammars = [ "themes/nivis/syntaxes/math-display.json" ]
 main_section = "posts"
 avatar = "images/avatar.jpeg"
 
+# Homepage layout: "focus" (default) or "horizontal"
+home_layout = "horizontal"
+
 math_display = "mathjax"
 
 # Social links
