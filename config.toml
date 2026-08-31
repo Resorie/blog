@@ -1,5 +1,5 @@
 # The URL the site will be built for
-base_url = "https://resorie.github.io/blog"
+base_url = "https://resorie.xyz/blog"
 
 title = "Runtime Error"
 description = "Resory's blog"
