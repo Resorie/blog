@@ -4,7 +4,7 @@ date = 2026-01-15
 description = "2026.1.15 随笔"
 
 [taxonomies]
-tags = ["随笔"]
+tags = ["Prose"]
 
 [extra]
 +++

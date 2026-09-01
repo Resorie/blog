@@ -4,7 +4,7 @@ date = 2026-04-23
 description = "Pohlig-Hellman 算法"
 
 [taxonomies]
-tags = ["数论", "离散对数", "算法"]
+tags = ["Research"]
 
 [extra]
 +++

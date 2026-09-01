@@ -4,7 +4,7 @@ date = 2025-07-23
 description = "Montgomery Multiplications"
 
 [taxonomies]
-tags = ["数论", "算法"]
+tags = ["Research"]
 
 [extra]
 +++

@@ -4,7 +4,7 @@ date = 2025-12-10
 description = "二次筛法 Quadratic Sieve"
 
 [taxonomies]
-tags = ["数论", "密码学", "质因数分解", "算法"]
+tags = ["Research"]
 
 [extra]
 +++

@@ -30,6 +30,8 @@ avatar = "images/avatar.jpeg"
 
 # Homepage layout: "focus" (default) or "horizontal"
 home_layout = "horizontal"
+# Use one category per post while preserving the /tags/ URL.
+taxonomy_mode = "category"
 
 math_display = "mathjax"
 
