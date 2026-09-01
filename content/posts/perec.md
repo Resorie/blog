@@ -4,7 +4,7 @@ date = 2025-12-18
 description = "Project Euler 随机做题记录。"
 
 [taxonomies]
-tags = ["Research"]
+tags = ["Explorations"]
 +++
 
 不定期持续（不保证）更新。
