@@ -4,7 +4,7 @@ date = 2025-07-23
 description = "Montgomery Multiplications"
 
 [taxonomies]
-tags = ["Exploration"]
+tags = ["Explorations"]
 
 [extra]
 +++

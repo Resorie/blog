@@ -4,7 +4,7 @@ date = 2025-12-10
 description = "二次筛法 Quadratic Sieve"
 
 [taxonomies]
-tags = ["Exploration"]
+tags = ["Explorations"]
 
 [extra]
 +++

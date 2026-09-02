@@ -4,7 +4,7 @@ date = 2026-06-15
 description = "25-26 春季学期“药物”主题《写作与沟通》课程终稿"
 
 [taxonomies]
-tags = ["Lecture Note"]
+tags = ["Lecture Notes"]
 
 [extra]
 subtitle = "从海特-阿什伯里之死看“迷幻复兴”"
