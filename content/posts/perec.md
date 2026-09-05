@@ -1,6 +1,7 @@
 +++
 title = "PE 随机做题寄录"
 date = 2025-12-18
+updated = 2026-09-01
 description = "Project Euler 随机做题记录。"
 
 [taxonomies]

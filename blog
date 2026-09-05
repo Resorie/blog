@@ -1,0 +1,207 @@
+#!/usr/bin/env python3
+"""Create and publish local Zola posts without changing their content."""
+
+from __future__ import annotations
+
+import argparse
+from datetime import date
+import json
+import os
+from pathlib import Path
+import re
+import stat
+import sys
+import tempfile
+
+try:
+    import tomllib
+except ModuleNotFoundError:
+    raise SystemExit("blog requires Python 3.11 or later.")
+
+
+ROOT = Path(__file__).resolve().parent
+FRONT_MATTER = re.compile(
+    r"\A(\+\+\+\r?\n)(.*?)(^\+\+\+[ \t]*(?:\r?\n|\Z).*)\Z", re.M | re.S
+)
+
+
+def slug_value(value: str) -> str:
+    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", value) or value == "index":
+        raise argparse.ArgumentTypeError(
+            "use lowercase letters, digits and single hyphens for the slug; "
+            "'index' is reserved"
+        )
+    return value
+
+
+def date_value(value: str) -> date:
+    try:
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+            raise ValueError
+        return date.fromisoformat(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError("use a valid date in YYYY-MM-DD format")
+
+
+def nonempty(value: str) -> str:
+    value = value.strip()
+    if not value or any(ord(char) < 32 or ord(char) == 127 for char in value):
+        raise argparse.ArgumentTypeError("use nonempty text without control characters")
+    return value
+
+
+def toml_string(value: str) -> str:
+    return json.dumps(value, ensure_ascii=False).replace("\x7f", "\\u007f")
+
+
+def post_path(root: Path, slug: str) -> Path:
+    posts = root / "content" / "posts"
+    if not posts.is_dir() or not posts.resolve().is_relative_to(root.resolve()):
+        raise ValueError("expected a content/posts directory inside the blog repository")
+    return posts / f"{slug}.md"
+
+
+def create_post(root: Path, args: argparse.Namespace) -> Path:
+    path = post_path(root, args.slug)
+    bundle = path.with_suffix("")
+    if bundle.exists() or bundle.is_symlink():
+        raise ValueError(f"refusing to reuse an existing post directory: {bundle}")
+    tags = f"[{toml_string(args.category)}]" if args.category else "[]"
+    source = (
+        "+++\n"
+        f"title = {toml_string(args.title)}\n"
+        f"slug = {toml_string(args.slug)}\n"
+        f"date = {(args.date or date.today()).isoformat()}\n"
+        f"description = {toml_string(args.description)}\n"
+        f"draft = {'true' if args.kind == 'draft' else 'false'}\n"
+        "\n[taxonomies]\n"
+        f"tags = {tags}\n"
+        "+++\n\n"
+    ).encode("utf-8")
+    try:
+        with path.open("xb") as file:
+            file.write(source)
+    except FileExistsError:
+        raise ValueError(f"refusing to overwrite an existing file: {path}")
+    return path
+
+
+def replace_field(header: str, key: str, value: date | bool) -> str:
+    original = tomllib.loads(header)
+    expected = {**original, key: value}
+    literal = str(value).lower()
+    if key not in original:
+        newline = "\r\n" if "\r\n" in header else "\n"
+        return f"{key} = {literal}{newline}" + header
+    if original == expected:
+        return header
+
+    # Validate each candidate with TOML so tables and multiline strings stay intact.
+    pattern = re.compile(
+        rf"^[ \t]*(?:{key}|'{key}'|\"{key}\")[ \t]*=[ \t]*(?P<value>[^#\r\n]+)",
+        re.M,
+    )
+    for match in pattern.finditer(header):
+        start = match.start("value")
+        end = start + len(match.group("value").rstrip(" \t"))
+        candidate = header[:start] + literal + header[end:]
+        try:
+            if tomllib.loads(candidate) == expected:
+                return candidate
+        except tomllib.TOMLDecodeError:
+            continue
+    raise ValueError(f"cannot safely update '{key}'; use a simple top-level assignment")
+
+
+def publish_text(source: str, published_on: date) -> str:
+    match = FRONT_MATTER.fullmatch(source)
+    if match is None:
+        raise ValueError("expected TOML front matter enclosed by +++")
+    opening, header, remainder = match.groups()
+    metadata = tomllib.loads(header)
+    if metadata.get("draft") is not True:
+        raise ValueError("not a draft: expected top-level draft = true; nothing changed")
+    header = replace_field(header, "date", published_on)
+    header = replace_field(header, "draft", False)
+    return opening + header + remainder
+
+
+def publish_post(root: Path, args: argparse.Namespace) -> Path | None:
+    path = post_path(root, args.slug)
+    if path.is_symlink() or not path.is_file():
+        raise ValueError(f"expected an existing, non-symlink post: {path}")
+    original = path.read_bytes()
+    published_on = args.date or date.today()
+    replacement = publish_text(original.decode("utf-8"), published_on).encode("utf-8")
+
+    if args.date is None:
+        if not sys.stdin.isatty():
+            raise ValueError("publication needs a confirmed date; pass --date YYYY-MM-DD")
+        answer = input(
+            f"Publish {args.slug} locally with date {published_on.isoformat()}? [y/N] "
+        )
+        if answer.strip().lower() not in ("y", "yes"):
+            print("Cancelled; nothing changed.")
+            return None
+
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(dir=path.parent, prefix=".blog-", delete=False) as file:
+            temporary = Path(file.name)
+            file.write(replacement)
+            file.flush()
+            os.fchmod(file.fileno(), stat.S_IMODE(path.stat().st_mode))
+        if path.is_symlink() or path.read_bytes() != original:
+            raise ValueError("the post changed while publishing; nothing overwritten, please retry")
+        os.replace(temporary, path)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+    return path
+
+
+def parser() -> argparse.ArgumentParser:
+    result = argparse.ArgumentParser(
+        prog="blog",
+        description="Create and publish local blog posts. Never commits, pushes or deploys.",
+        epilog="Guide: docs/writing.md. Preview drafts with: zola serve --drafts",
+    )
+    commands = result.add_subparsers(dest="command", required=True)
+    new = commands.add_parser("new", help="create a post or draft in content/posts")
+    new.add_argument("kind", choices=("draft", "post"))
+    new.add_argument("title", type=nonempty)
+    new.add_argument("--slug", required=True, type=slug_value, help="stable URL and filename")
+    new.add_argument("--date", type=date_value, help="YYYY-MM-DD; defaults to today")
+    new.add_argument("--description", default="", help="short description; defaults to empty")
+    new.add_argument("--category", type=nonempty, help="one category, stored in taxonomies.tags")
+
+    publish = commands.add_parser("publish", help="mark a draft as a post locally")
+    publish.add_argument("slug", type=slug_value)
+    publish.add_argument(
+        "--date", type=date_value,
+        help="confirm this publication date; otherwise asks to use today in a terminal",
+    )
+    return result
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parser().parse_args(argv)
+    try:
+        if args.command == "new":
+            path = create_post(ROOT, args)
+            print(f"Created {args.kind}: {path}")
+        else:
+            path = publish_post(ROOT, args)
+            if path is not None:
+                print(f"Published locally: {path} (not deployed)")
+        return 0
+    except (OSError, ValueError) as error:
+        print(f"blog: {error}", file=sys.stderr)
+        return 1
+    except (EOFError, KeyboardInterrupt):
+        print("\nCancelled; nothing changed.", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

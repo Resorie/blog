@@ -11,3 +11,6 @@ push-all.sh
 .claude
 
 .playwright-mcp
+
+/docs/writing.md
+/scripts/

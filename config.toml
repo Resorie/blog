@@ -32,6 +32,7 @@ avatar = "images/avatar.jpeg"
 home_layout = "horizontal"
 # Use one category per post while preserving the /tags/ URL.
 taxonomy_mode = "category"
+content_lang = "zh-CN"
 
 math_display = "mathjax"
 
