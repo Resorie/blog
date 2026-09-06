@@ -10,8 +10,15 @@ generate_feeds = true
 feed_filenames = ["rss.xml", "atom.xml"]
 
 compile_sass = true
+build_search_index = true
 
 taxonomies = [{ name = "tags", paginate_by = 5 }]
+
+[search]
+index_format = "fuse_json"
+include_title = true
+include_description = true
+include_content = true
 
 [markdown]
 render_emoji = true
