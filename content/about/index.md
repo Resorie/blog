@@ -7,6 +7,6 @@ template = "about.html"
 
 Former OIer. 喜欢摆烂。
 
-[My cnblogs](https://www.cnblogs.com/resorie) | [My Luogu account](https://www.luogu.com.cn/user/114082) 
+[My cnblogs](https://www.cnblogs.com/resorie) | [My Luogu account](https://www.luogu.com.cn/user/114082) | [My problems](https://www.luogu.com.cn/training/1071039)
 
 QQ: 2680539364
