@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create and publish local Zola posts without changing their content."""
+"""Create, publish and process math in local Zola posts."""
 
 from __future__ import annotations
 
@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import re
 import stat
+import subprocess
 import sys
 import tempfile
 
@@ -160,10 +161,25 @@ def publish_post(root: Path, args: argparse.Namespace) -> Path | None:
     return path
 
 
+def process_math(root: Path, args: argparse.Namespace) -> int:
+    script = root / "themes" / "nivis" / "scripts" / "process_math.py"
+    if not script.is_file():
+        raise ValueError("missing themes/nivis/scripts/process_math.py; initialize the Nivis submodule first")
+    paths = args.paths or [root / "content"]
+    for path in paths:
+        if not path.is_dir() and not (path.is_file() and path.suffix == ".md"):
+            raise ValueError(f"expected an existing Markdown file or directory: {path}")
+    command = [sys.executable, "-B", str(script)]
+    if args.check:
+        command.append("--check")
+    command.extend(["--", *(str(path) for path in paths)])
+    return subprocess.run(command, check=False).returncode
+
+
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(
         prog="blog",
-        description="Create and publish local blog posts. Never commits, pushes or deploys.",
+        description="Create, publish and process math in local blog posts. Never commits, pushes or deploys.",
         epilog="Guide: docs/writing.md. Preview drafts with: zola serve --drafts",
     )
     commands = result.add_subparsers(dest="command", required=True)
@@ -181,6 +197,10 @@ def parser() -> argparse.ArgumentParser:
         "--date", type=date_value,
         help="confirm this publication date; otherwise asks to use today in a terminal",
     )
+
+    math = commands.add_parser("process-math", help="protect TeX from Markdown using the Nivis processor")
+    math.add_argument("paths", nargs="*", type=Path, help="Markdown files or directories; defaults to this repository's content")
+    math.add_argument("--check", action="store_true", help="check without writing; exit 1 if processing is needed")
     return result
 
 
@@ -190,10 +210,12 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "new":
             path = create_post(ROOT, args)
             print(f"Created {args.kind}: {path}")
-        else:
+        elif args.command == "publish":
             path = publish_post(ROOT, args)
             if path is not None:
                 print(f"Published locally: {path} (not deployed)")
+        else:
+            return process_math(ROOT, args)
         return 0
     except (OSError, ValueError) as error:
         print(f"blog: {error}", file=sys.stderr)
